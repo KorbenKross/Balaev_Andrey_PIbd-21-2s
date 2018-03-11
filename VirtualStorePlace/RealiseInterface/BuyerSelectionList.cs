@@ -22,48 +22,39 @@ namespace VirtualStorePlace.RealiseInterface
 
         public List<BuyerUserViewModel> GetList()
         {
-            List<BuyerUserViewModel> result = new List<BuyerUserViewModel>();
-            for (int i = 0; i < source.Buyers.Count; ++i)
-            {
-                result.Add(new BuyerUserViewModel
+            List<BuyerUserViewModel> result = source.Buyers
+                .Select(rec => new BuyerUserViewModel
                 {
-                    Id = source.Buyers[i].Id,
-                    BuyerFIO = source.Buyers[i].BuyerFIO
-                });
-            }
+                    Id = rec.Id,
+                    BuyerFIO = rec.BuyerFIO
+                })
+                .ToList();
             return result;
         }
 
         public BuyerUserViewModel GetElement(int id)
         {
-            for (int i = 0; i < source.Buyers.Count; ++i)
+            Buyer component = source.Buyers.FirstOrDefault(rec => rec.Id == id);
+            if (component != null)
             {
-                if (source.Buyers[i].Id == id)
+                return new BuyerUserViewModel
                 {
-                    return new BuyerUserViewModel
-                    {
-                        Id = source.Buyers[i].Id,
-                        BuyerFIO = source.Buyers[i].BuyerFIO
-                    };
-                }
+                    Id = component.Id,
+                    BuyerFIO = component.BuyerFIO
+                };
             }
             throw new Exception("Элемент не найден");
         }
 
+
         public void AddElement(BuyerConnectingModel model)
         {
-            int maxId = 0;
-            for (int i = 0; i < source.Buyers.Count; ++i)
+            Buyer component = source.Buyers.FirstOrDefault(rec => rec.BuyerFIO == model.BuyerFIO);
+            if (component != null)
             {
-                if (source.Buyers[i].Id > maxId)
-                {
-                    maxId = source.Buyers[i].Id;
-                }
-                if (source.Buyers[i].BuyerFIO == model.BuyerFIO)
-                {
-                    throw new Exception("Уже есть клиент с таким ФИО");
-                }
+                throw new Exception("Уже есть клиент с таким ФИО");
             }
+            int maxId = source.Buyers.Count > 0 ? source.Buyers.Max(rec => rec.Id) : 0;
             source.Buyers.Add(new Buyer
             {
                 Id = maxId + 1,
@@ -73,39 +64,32 @@ namespace VirtualStorePlace.RealiseInterface
 
         public void UpdElement(BuyerConnectingModel model)
         {
-            int index = -1;
-            for (int i = 0; i < source.Buyers.Count; ++i)
+            Buyer component = source.Buyers.FirstOrDefault(rec =>
+                                    rec.BuyerFIO == model.BuyerFIO && rec.Id != model.Id);
+            if (component != null)
             {
-                if (source.Buyers[i].Id == model.Id)
-                {
-                    index = i;
-                }
-                if (source.Buyers[i].BuyerFIO == model.BuyerFIO &&
-                    source.Buyers[i].Id != model.Id)
-                {
-                    throw new Exception("Уже есть клиент с таким ФИО");
-                }
+                throw new Exception("Уже есть клиент с таким ФИО");
             }
-            if (index == -1)
+            component = source.Buyers.FirstOrDefault(rec => rec.Id == model.Id);
+            if (component == null)
             {
                 throw new Exception("Элемент не найден");
             }
-            source.Buyers[index].BuyerFIO = model.BuyerFIO;
+            component.BuyerFIO = model.BuyerFIO;
         }
 
         public void DelElement(int id)
         {
-            for (int i = 0; i < source.Buyers.Count; ++i)
+            Buyer component = source.Buyers.FirstOrDefault(rec => rec.Id == id);
+            if (component != null)
             {
-                if (source.Buyers[i].Id == id)
-                {
-                    source.Buyers.RemoveAt(i);
-                    return;
-                }
+                source.Buyers.Remove(component);
             }
-            throw new Exception("Элемент не найден");
+            else
+            {
+                throw new Exception("Элемент не найден");
+            }
         }
-
 
     }
 }

@@ -22,48 +22,39 @@ namespace VirtualStorePlace.RealiseInterface
 
         public List<ElementUserViewModel> GetList()
         {
-            List<ElementUserViewModel> result = new List<ElementUserViewModel>();
-            for (int i = 0; i < source.Elements.Count; ++i)
-            {
-                result.Add(new ElementUserViewModel
+            List<ElementUserViewModel> result = source.Elements
+                .Select(rec => new ElementUserViewModel
                 {
-                    Id = source.Elements[i].Id,
-                    ElementName = source.Elements[i].ElementName
-                });
-            }
+                    Id = rec.Id,
+                    ElementName = rec.ElementName
+                })
+                .ToList();
             return result;
         }
 
         public ElementUserViewModel GetElement(int id)
         {
-            for (int i = 0; i < source.Elements.Count; ++i)
+            Element component = source.Elements.FirstOrDefault(rec => rec.Id == id);
+            if (component != null)
             {
-                if (source.Elements[i].Id == id)
+                return new ElementUserViewModel
                 {
-                    return new ElementUserViewModel
-                    {
-                        Id = source.Elements[i].Id,
-                        ElementName = source.Elements[i].ElementName
-                    };
-                }
+                    Id = component.Id,
+                    ElementName = component.ElementName
+                };
             }
             throw new Exception("Элемент не найден");
         }
 
+
         public void AddElement(ElementConnectingModel model)
         {
-            int maxId = 0;
-            for (int i = 0; i < source.Elements.Count; ++i)
+            Element component = source.Elements.FirstOrDefault(rec => rec.ElementName == model.ElementName);
+            if (component != null)
             {
-                if (source.Elements[i].Id > maxId)
-                {
-                    maxId = source.Elements[i].Id;
-                }
-                if (source.Elements[i].ElementName == model.ElementName)
-                {
-                    throw new Exception("Уже есть компонент с таким названием");
-                }
+                throw new Exception("Уже есть компонент с таким названием");
             }
+            int maxId = source.Elements.Count > 0 ? source.Elements.Max(rec => rec.Id) : 0;
             source.Elements.Add(new Element
             {
                 Id = maxId + 1,
@@ -73,37 +64,31 @@ namespace VirtualStorePlace.RealiseInterface
 
         public void UpdElement(ElementConnectingModel model)
         {
-            int index = -1;
-            for (int i = 0; i < source.Elements.Count; ++i)
+            Element component = source.Elements.FirstOrDefault(rec =>
+                                        rec.ElementName == model.ElementName && rec.Id != model.Id);
+            if (component != null)
             {
-                if (source.Elements[i].Id == model.Id)
-                {
-                    index = i;
-                }
-                if (source.Elements[i].ElementName == model.ElementName &&
-                    source.Elements[i].Id != model.Id)
-                {
-                    throw new Exception("Уже есть компонент с таким названием");
-                }
+                throw new Exception("Уже есть компонент с таким названием");
             }
-            if (index == -1)
+            component = source.Elements.FirstOrDefault(rec => rec.Id == model.Id);
+            if (component == null)
             {
                 throw new Exception("Элемент не найден");
             }
-            source.Elements[index].ElementName = model.ElementName;
+            component.ElementName = model.ElementName;
         }
 
         public void DelElement(int id)
         {
-            for (int i = 0; i < source.Elements.Count; ++i)
+            Element component = source.Elements.FirstOrDefault(rec => rec.Id == id);
+            if (component != null)
             {
-                if (source.Elements[i].Id == id)
-                {
-                    source.Elements.RemoveAt(i);
-                    return;
-                }
+                source.Elements.Remove(component);
             }
-            throw new Exception("Элемент не найден");
+            else
+            {
+                throw new Exception("Элемент не найден");
+            }
         }
     }
 }
