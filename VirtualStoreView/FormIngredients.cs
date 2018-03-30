@@ -30,11 +30,6 @@ namespace VirtualStoreView
             this.service = service;
         }
 
-        private void FormIngredients_Load(object sender, EventArgs e)
-        {
-
-        }
-
         private void LoadData()
         {
             try
