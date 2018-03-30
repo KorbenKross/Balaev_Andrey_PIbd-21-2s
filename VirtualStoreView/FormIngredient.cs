@@ -203,10 +203,5 @@ namespace VirtualStoreView
             DialogResult = DialogResult.Cancel;
             Close();
         }
-
-        private void groupBoxComponents_Enter(object sender, EventArgs e)
-        {
-
-        }
     }
 }
