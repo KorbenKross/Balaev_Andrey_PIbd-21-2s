@@ -37,32 +37,6 @@ namespace VirtualStoreView
             this.service = service;
         }
 
-        private void FormIngredient_Load(object sender, EventArgs e)
-        {
-            if (id.HasValue)
-            {
-                try
-                {
-                    IngredientUserViewModel view = service.GetElement(id.Value);
-                    if (view != null)
-                    {
-                        textBoxName.Text = view.IngredientName;
-                        textBoxPrice.Text = view.Price.ToString();
-                        ingredientElements = view.IngredientElement;
-                        LoadData();
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            else
-            {
-                ingredientElements = new List<IngredientElementUserViewModel>();
-            }
-        }
-
         private void FormIngredient_Load_1(object sender, EventArgs e)
         {
             if (id.HasValue)
