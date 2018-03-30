@@ -132,10 +132,5 @@ namespace VirtualStoreView
             DialogResult = DialogResult.Cancel;
             Close();
         }
-
-        private void textBoxSum_TextChanged(object sender, EventArgs e)
-        {
-
-        }
     }
 }
