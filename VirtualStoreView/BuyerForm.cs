@@ -27,7 +27,6 @@ namespace VirtualStoreView
 
         private int? id;
 
-
         public BuyerForm(IBuyerCustomer service)
         {
             InitializeComponent();
@@ -93,7 +92,6 @@ namespace VirtualStoreView
                 }
             }
         }
-
         private void button1_Click(object sender, EventArgs e)
         {
             LoadData();
