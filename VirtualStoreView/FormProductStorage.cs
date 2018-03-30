@@ -68,12 +68,7 @@ namespace VirtualStoreView
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
-        private void dataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
+        
         private void FormProductStorage_Load(object sender, EventArgs e)
         {
             if (id.HasValue)
