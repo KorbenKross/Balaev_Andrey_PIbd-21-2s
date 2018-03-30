@@ -98,10 +98,5 @@ namespace VirtualStoreView
         {
             LoadData();
         }
-
-        private void BuyerForm_Load(object sender, EventArgs e)
-        {
-            
-        }
     }
 }
