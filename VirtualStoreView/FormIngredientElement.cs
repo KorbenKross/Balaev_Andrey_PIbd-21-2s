@@ -33,11 +33,6 @@ namespace VirtualStoreView
             this.service = service;
         }
 
-        private void FormIngredientElement_Load(object sender, EventArgs e)
-        {
-            
-        }
-
         private void FormIngredientElement_Load_1(object sender, EventArgs e)
         {
             try
@@ -104,11 +99,6 @@ namespace VirtualStoreView
         {
             DialogResult = DialogResult.Cancel;
             Close();
-        }
-
-        private void comboBoxComponent_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }
