@@ -29,10 +29,10 @@
         private void InitializeComponent()
         {
             this.dataGridView = new System.Windows.Forms.DataGridView();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
+            this.updateBtn = new System.Windows.Forms.Button();
+            this.addBtn = new System.Windows.Forms.Button();
+            this.changeBtn = new System.Windows.Forms.Button();
+            this.deleteBtn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.SuspendLayout();
             // 
@@ -44,59 +44,60 @@
             this.dataGridView.RowTemplate.Height = 24;
             this.dataGridView.Size = new System.Drawing.Size(447, 563);
             this.dataGridView.TabIndex = 0;
+            this.dataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellContentClick);
             // 
-            // button1
+            // updateBtn
             // 
-            this.button1.Location = new System.Drawing.Point(483, 394);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(95, 30);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Обновить";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.updateBtn.Location = new System.Drawing.Point(483, 394);
+            this.updateBtn.Name = "updateBtn";
+            this.updateBtn.Size = new System.Drawing.Size(95, 30);
+            this.updateBtn.TabIndex = 1;
+            this.updateBtn.Text = "Обновить";
+            this.updateBtn.UseVisualStyleBackColor = true;
+            this.updateBtn.Click += new System.EventHandler(this.updateBtn_Click);
             // 
-            // button2
+            // addBtn
             // 
-            this.button2.Location = new System.Drawing.Point(482, 57);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(96, 31);
-            this.button2.TabIndex = 2;
-            this.button2.Text = "Добавить";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.addBtn.Location = new System.Drawing.Point(482, 57);
+            this.addBtn.Name = "addBtn";
+            this.addBtn.Size = new System.Drawing.Size(96, 31);
+            this.addBtn.TabIndex = 2;
+            this.addBtn.Text = "Добавить";
+            this.addBtn.UseVisualStyleBackColor = true;
+            this.addBtn.Click += new System.EventHandler(this.addBtn_Click);
             // 
-            // button3
+            // changeBtn
             // 
-            this.button3.Location = new System.Drawing.Point(482, 161);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(96, 31);
-            this.button3.TabIndex = 3;
-            this.button3.Text = "Изменить";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.changeBtn.Location = new System.Drawing.Point(482, 161);
+            this.changeBtn.Name = "changeBtn";
+            this.changeBtn.Size = new System.Drawing.Size(96, 31);
+            this.changeBtn.TabIndex = 3;
+            this.changeBtn.Text = "Изменить";
+            this.changeBtn.UseVisualStyleBackColor = true;
+            this.changeBtn.Click += new System.EventHandler(this.changeBtn_Click);
             // 
-            // button4
+            // deleteBtn
             // 
-            this.button4.Location = new System.Drawing.Point(482, 277);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(96, 31);
-            this.button4.TabIndex = 4;
-            this.button4.Text = "Удалить";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.deleteBtn.Location = new System.Drawing.Point(482, 277);
+            this.deleteBtn.Name = "deleteBtn";
+            this.deleteBtn.Size = new System.Drawing.Size(96, 31);
+            this.deleteBtn.TabIndex = 4;
+            this.deleteBtn.Text = "Удалить";
+            this.deleteBtn.UseVisualStyleBackColor = true;
+            this.deleteBtn.Click += new System.EventHandler(this.deleteBtn_Click);
             // 
             // BuyerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(610, 564);
-            this.Controls.Add(this.button4);
-            this.Controls.Add(this.button3);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.deleteBtn);
+            this.Controls.Add(this.changeBtn);
+            this.Controls.Add(this.addBtn);
+            this.Controls.Add(this.updateBtn);
             this.Controls.Add(this.dataGridView);
             this.Name = "BuyerForm";
-            this.Text = "BuyerForm";
+            this.Text = "Покупатели";
             this.Load += new System.EventHandler(this.BuyerForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             this.ResumeLayout(false);
@@ -106,9 +107,9 @@
         #endregion
 
         private System.Windows.Forms.DataGridView dataGridView;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button updateBtn;
+        private System.Windows.Forms.Button addBtn;
+        private System.Windows.Forms.Button changeBtn;
+        private System.Windows.Forms.Button deleteBtn;
     }
 }

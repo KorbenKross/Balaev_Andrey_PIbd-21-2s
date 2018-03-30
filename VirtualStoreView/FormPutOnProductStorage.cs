@@ -43,7 +43,7 @@ namespace VirtualStoreView
                 List<ElementUserViewModel> listC = serviceC.GetList();
                 if (listC != null)
                 {
-                    comboBoxComponent.DisplayMember = "ComponentName";
+                    comboBoxComponent.DisplayMember = "ElementName";
                     comboBoxComponent.ValueMember = "Id";
                     comboBoxComponent.DataSource = listC;
                     comboBoxComponent.SelectedItem = null;
@@ -51,7 +51,7 @@ namespace VirtualStoreView
                 List<ProductStorageUserViewModel> listS = serviceS.GetList();
                 if (listS != null)
                 {
-                    comboBoxStock.DisplayMember = "StockName";
+                    comboBoxStock.DisplayMember = "ProductStorageName";
                     comboBoxStock.ValueMember = "Id";
                     comboBoxStock.DataSource = listS;
                     comboBoxStock.SelectedItem = null;

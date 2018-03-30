@@ -52,7 +52,7 @@ namespace VirtualStoreView
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void addBtn_Click(object sender, EventArgs e)
         {
             var form = Container.Resolve<FormSingleBuyer>();
             if (form.ShowDialog() == DialogResult.OK)
@@ -61,7 +61,7 @@ namespace VirtualStoreView
             }
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void changeBtn_Click(object sender, EventArgs e)
         {
             if(dataGridView.SelectedRows.Count == 1)
             {
@@ -74,7 +74,7 @@ namespace VirtualStoreView
             }
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void deleteBtn_Click(object sender, EventArgs e)
         {
             if (dataGridView.SelectedRows.Count == 1)
             {
@@ -94,14 +94,19 @@ namespace VirtualStoreView
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void updateBtn_Click(object sender, EventArgs e)
         {
             LoadData();
         }
 
         private void BuyerForm_Load(object sender, EventArgs e)
         {
-            
+            LoadData();
+        }
+
+        private void dataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            LoadData();
         }
     }
 }
