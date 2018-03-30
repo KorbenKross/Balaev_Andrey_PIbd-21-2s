@@ -30,8 +30,8 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.textBoxFIO = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
+            this.saveBtn = new System.Windows.Forms.Button();
+            this.cancelBrn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -53,23 +53,23 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(108, 44);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(100, 33);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "Сохранить";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.saveBtn.Location = new System.Drawing.Point(108, 44);
+            this.saveBtn.Name = "button1";
+            this.saveBtn.Size = new System.Drawing.Size(100, 33);
+            this.saveBtn.TabIndex = 2;
+            this.saveBtn.Text = "Сохранить";
+            this.saveBtn.UseVisualStyleBackColor = true;
+            this.saveBtn.Click += new System.EventHandler(this.button1_Click);
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(214, 44);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(100, 33);
-            this.button2.TabIndex = 3;
-            this.button2.Text = "Отмена";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.cancelBrn.Location = new System.Drawing.Point(214, 44);
+            this.cancelBrn.Name = "button2";
+            this.cancelBrn.Size = new System.Drawing.Size(100, 33);
+            this.cancelBrn.TabIndex = 3;
+            this.cancelBrn.Text = "Отмена";
+            this.cancelBrn.UseVisualStyleBackColor = true;
+            this.cancelBrn.Click += new System.EventHandler(this.button2_Click);
             // 
             // FormSingleBuyer
             // 
