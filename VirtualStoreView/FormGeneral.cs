@@ -52,12 +52,6 @@ namespace VirtualStoreView
             }
         }
 
-
-        private void FormGeneral_Load(object sender, EventArgs e)
-        {
-
-        }
-
         private void buttonCreateOrder_Click(object sender, EventArgs e)
         {
             var form = Container.Resolve<FormCustomerSelection>();
