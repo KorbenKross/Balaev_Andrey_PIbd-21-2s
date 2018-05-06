@@ -1,0 +1,30 @@
+﻿@{
+    ViewBag.Title = "ProductStorage";
+}
+
+<style>
+    select {
+        margin-bottom: 50px;
+    }
+
+    .item {
+        margin-bottom: 30px;
+    }
+</style>
+<h2><b>Взять со склада</b></h2><br />
+<form action="/ProductStorage/ProductStorage" id="ProductStorage" method="post">
+    <select name="selectedItem" form="ingedientElement">
+        @using VirtualStore;
+        @using VirtualStorePlace.LogicInterface;
+        @using VirtualStorePlace.ConnectingModel;
+        @using VirtualStorePlace.UserViewModel;
+        @{ int i = 0;
+        foreach (KitchenerUserViewModel st in @ViewBag.DataList)
+        {
+            i++;
+            <option value="@i">Повар: @st.KitchenerFIO @i</option>
+    }
+        }
+    </select>
+    <input type="submit" name="action" value="Сохранить" />
+</form>
