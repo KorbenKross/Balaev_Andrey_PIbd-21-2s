@@ -16,9 +16,5 @@ namespace VirtualStore
 
         public int Count { get; set; }
 
-        public virtual ProductStorage ProductStorage { get; set; }
-
-        public virtual Element Element { get; set; }
-
     }
 }

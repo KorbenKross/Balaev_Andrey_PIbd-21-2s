@@ -15,9 +15,5 @@ namespace VirtualStore
         public int ElementId { get; set; }
 
         public int Count { get; set; }
-
-        public virtual Ingredient Ingredient { get; set; }
-
-        public virtual Element Element { get; set; }
     }
 }

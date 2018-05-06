@@ -53,7 +53,7 @@
             this.comboBoxComponent.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxComponent.FormattingEnabled = true;
             this.comboBoxComponent.Location = new System.Drawing.Point(116, 41);
-            this.comboBoxComponent.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.comboBoxComponent.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxComponent.Name = "comboBoxComponent";
             this.comboBoxComponent.Size = new System.Drawing.Size(288, 24);
             this.comboBoxComponent.TabIndex = 3;
@@ -61,7 +61,7 @@
             // buttonCancel
             // 
             this.buttonCancel.Location = new System.Drawing.Point(291, 106);
-            this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonCancel.Margin = new System.Windows.Forms.Padding(4);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(100, 28);
             this.buttonCancel.TabIndex = 7;
@@ -72,7 +72,7 @@
             // buttonSave
             // 
             this.buttonSave.Location = new System.Drawing.Point(183, 106);
-            this.buttonSave.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonSave.Margin = new System.Windows.Forms.Padding(4);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(100, 28);
             this.buttonSave.TabIndex = 6;
@@ -83,7 +83,7 @@
             // textBoxCount
             // 
             this.textBoxCount.Location = new System.Drawing.Point(116, 74);
-            this.textBoxCount.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBoxCount.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxCount.Name = "textBoxCount";
             this.textBoxCount.Size = new System.Drawing.Size(288, 22);
             this.textBoxCount.TabIndex = 5;
@@ -103,10 +103,11 @@
             this.comboBoxStock.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxStock.FormattingEnabled = true;
             this.comboBoxStock.Location = new System.Drawing.Point(116, 7);
-            this.comboBoxStock.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.comboBoxStock.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxStock.Name = "comboBoxStock";
             this.comboBoxStock.Size = new System.Drawing.Size(288, 24);
             this.comboBoxStock.TabIndex = 1;
+            this.comboBoxStock.SelectedIndexChanged += new System.EventHandler(this.comboBoxStock_SelectedIndexChanged);
             // 
             // labelStock
             // 
@@ -131,7 +132,7 @@
             this.Controls.Add(this.buttonSave);
             this.Controls.Add(this.textBoxCount);
             this.Controls.Add(this.labelComponent);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "FormPutOnProductStorage";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Пополнение склада";

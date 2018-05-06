@@ -25,11 +25,5 @@ namespace VirtualStore
         public DateTime DateCreate { get; set; }
 
         public DateTime? DateImplement { get; set; }
-
-        public virtual Buyer Buyer { get; set; }
-
-        public virtual Ingredient Ingredient { get; set; }
-
-        public virtual Kitchener Kitchener { get; set; }
     }
 }

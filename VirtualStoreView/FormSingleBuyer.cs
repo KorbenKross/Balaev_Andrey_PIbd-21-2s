@@ -34,7 +34,12 @@ namespace VirtualStoreView
             this.service = service;     
         }
 
-        private void saveBtn_Click(object sender, EventArgs e)
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(textBoxFIO.Text))
             {
@@ -68,7 +73,7 @@ namespace VirtualStoreView
             }
         }
 
-        private void cancelBtn_Click(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
             Close();

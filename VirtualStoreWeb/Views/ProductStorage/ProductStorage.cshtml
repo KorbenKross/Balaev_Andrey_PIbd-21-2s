@@ -1,0 +1,14 @@
+﻿@model VirtualStore.ProductStorage
+@{
+    ViewBag.Title = "ProductStorage";
+}
+<h2>Добавить склад</h2>
+<form action="/ProductStorage/ProductStorage" method="post">
+    <div class="item">
+        <label>Название склада:</label>
+        <input name="ProductStorageName" value="Stock" />
+    </div>
+    <input type="submit" name="action" value="Сохранить" />
+</form>
+
+

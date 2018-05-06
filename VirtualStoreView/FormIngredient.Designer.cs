@@ -117,6 +117,7 @@
             this.groupBoxComponents.TabIndex = 4;
             this.groupBoxComponents.TabStop = false;
             this.groupBoxComponents.Text = "Компоненты";
+            this.groupBoxComponents.Enter += new System.EventHandler(this.groupBoxComponents_Enter);
             // 
             // buttonRef
             // 
