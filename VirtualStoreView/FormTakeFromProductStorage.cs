@@ -50,7 +50,7 @@ namespace VirtualStoreView
                 List<KitchenerUserViewModel> listI = serviceI.GetList();
                 if (listI != null)
                 {
-                    comboBoxImplementer.DisplayMember = "ImplementerFIO";
+                    comboBoxImplementer.DisplayMember = "KitchenerFIO";
                     comboBoxImplementer.ValueMember = "Id";
                     comboBoxImplementer.DataSource = listI;
                     comboBoxImplementer.SelectedItem = null;

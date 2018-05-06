@@ -9,20 +9,21 @@ using VirtualStorePlace.LogicInterface;
 using VirtualStorePlace.UserViewModel;
 using VirtualStore;
 
-namespace VirtualStorePlace.RealiseInterface
-{
-    public class ElementSelectionList : IElementService
-    {
-        private BaseListSingleton source;
 
-        public ElementSelectionList()
+namespace VirtualStorePlace.RealeseInterfaceBD
+{
+    public class ElementSelectionListBD : IElementService
+    {
+        private AbstractDbContext context;
+
+        public ElementSelectionListBD(AbstractDbContext context)
         {
-            source = BaseListSingleton.GetInstance();
+            this.context = context;
         }
 
         public List<ElementUserViewModel> GetList()
         {
-            List<ElementUserViewModel> result = source.Elements
+            List<ElementUserViewModel> result = context.Elements
                 .Select(rec => new ElementUserViewModel
                 {
                     Id = rec.Id,
@@ -34,56 +35,56 @@ namespace VirtualStorePlace.RealiseInterface
 
         public ElementUserViewModel GetElement(int id)
         {
-            Element component = source.Elements.FirstOrDefault(rec => rec.Id == id);
-            if (component != null)
+            Element element = context.Elements.FirstOrDefault(rec => rec.Id == id);
+            if (element != null)
             {
                 return new ElementUserViewModel
                 {
-                    Id = component.Id,
-                    ElementName = component.ElementName
+                    Id = element.Id,
+                    ElementName = element.ElementName
                 };
             }
             throw new Exception("Элемент не найден");
         }
 
-
         public void AddElement(ElementConnectingModel model)
         {
-            Element component = source.Elements.FirstOrDefault(rec => rec.ElementName == model.ElementName);
-            if (component != null)
+            Element element = context.Elements.FirstOrDefault(rec => rec.ElementName == model.ElementName);
+            if (element != null)
             {
                 throw new Exception("Уже есть компонент с таким названием");
             }
-            int maxId = source.Elements.Count > 0 ? source.Elements.Max(rec => rec.Id) : 0;
-            source.Elements.Add(new Element
+            context.Elements.Add(new Element
             {
-                Id = maxId + 1,
                 ElementName = model.ElementName
             });
+            context.SaveChanges();
         }
 
         public void UpdElement(ElementConnectingModel model)
         {
-            Element component = source.Elements.FirstOrDefault(rec =>
+            Element element = context.Elements.FirstOrDefault(rec =>
                                         rec.ElementName == model.ElementName && rec.Id != model.Id);
-            if (component != null)
+            if (element != null)
             {
                 throw new Exception("Уже есть компонент с таким названием");
             }
-            component = source.Elements.FirstOrDefault(rec => rec.Id == model.Id);
-            if (component == null)
+            element = context.Elements.FirstOrDefault(rec => rec.Id == model.Id);
+            if (element == null)
             {
                 throw new Exception("Элемент не найден");
             }
-            component.ElementName = model.ElementName;
+            element.ElementName = model.ElementName;
+            context.SaveChanges();
         }
 
         public void DelElement(int id)
         {
-            Element component = source.Elements.FirstOrDefault(rec => rec.Id == id);
-            if (component != null)
+            Element element = context.Elements.FirstOrDefault(rec => rec.Id == id);
+            if (element != null)
             {
-                source.Elements.Remove(component);
+                context.Elements.Remove(element);
+                context.SaveChanges();
             }
             else
             {

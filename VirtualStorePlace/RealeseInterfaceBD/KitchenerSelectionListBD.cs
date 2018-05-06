@@ -3,26 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+
 using VirtualStorePlace.ConnectingModel;
 using VirtualStorePlace.LogicInterface;
 using VirtualStorePlace.UserViewModel;
 using VirtualStore;
 
-namespace VirtualStorePlace.RealiseInterface
+
+namespace VirtualStorePlace.RealeseInterfaceBD
 {
-    public class KitchenerSelectionList : IKitchenerService
+    public class KitchenerSelectionListBD : IKitchenerService
     {
+        private AbstractDbContext context;
 
-        private BaseListSingleton source;
-
-        public KitchenerSelectionList()
+        public KitchenerSelectionListBD(AbstractDbContext context)
         {
-            source = BaseListSingleton.GetInstance();
+            this.context = context;
         }
 
         public List<KitchenerUserViewModel> GetList()
         {
-            List<KitchenerUserViewModel> result = source.Kitcheners
+            List<KitchenerUserViewModel> result = context.Kitcheners
                 .Select(rec => new KitchenerUserViewModel
                 {
                     Id = rec.Id,
@@ -34,56 +35,56 @@ namespace VirtualStorePlace.RealiseInterface
 
         public KitchenerUserViewModel GetElement(int id)
         {
-            Kitchener component = source.Kitcheners.FirstOrDefault(rec => rec.Id == id);
-            if (component != null)
+            Kitchener element = context.Kitcheners.FirstOrDefault(rec => rec.Id == id);
+            if (element != null)
             {
                 return new KitchenerUserViewModel
                 {
-                    Id = component.Id,
-                    KitchenerFIO = component.KitchenerFIO
+                    Id = element.Id,
+                    KitchenerFIO = element.KitchenerFIO
                 };
             }
             throw new Exception("Элемент не найден");
         }
 
-
         public void AddElement(KitchenerConnectingModel model)
         {
-            Kitchener component = source.Kitcheners.FirstOrDefault(rec => rec.KitchenerFIO == model.KitchenerFIO);
-            if (component != null)
+            Kitchener element = context.Kitcheners.FirstOrDefault(rec => rec.KitchenerFIO == model.KitchenerFIO);
+            if (element != null)
             {
-                throw new Exception("Уже есть повар с таким ФИО");
+                throw new Exception("Уже есть сотрудник с таким ФИО");
             }
-            int maxId = source.Kitcheners.Count > 0 ? source.Kitcheners.Max(rec => rec.Id) : 0;
-            source.Kitcheners.Add(new Kitchener
+            context.Kitcheners.Add(new Kitchener
             {
-                Id = maxId + 1,
                 KitchenerFIO = model.KitchenerFIO
             });
+            context.SaveChanges();
         }
 
         public void UpdElement(KitchenerConnectingModel model)
         {
-            Kitchener component = source.Kitcheners.FirstOrDefault(rec =>
+            Kitchener element = context.Kitcheners.FirstOrDefault(rec =>
                                         rec.KitchenerFIO == model.KitchenerFIO && rec.Id != model.Id);
-            if (component != null)
+            if (element != null)
             {
                 throw new Exception("Уже есть сотрудник с таким ФИО");
             }
-            component = source.Kitcheners.FirstOrDefault(rec => rec.Id == model.Id);
-            if (component == null)
+            element = context.Kitcheners.FirstOrDefault(rec => rec.Id == model.Id);
+            if (element == null)
             {
                 throw new Exception("Элемент не найден");
             }
-            component.KitchenerFIO = model.KitchenerFIO;
+            element.KitchenerFIO = model.KitchenerFIO;
+            context.SaveChanges();
         }
 
         public void DelElement(int id)
         {
-            Kitchener component = source.Kitcheners.FirstOrDefault(rec => rec.Id == id);
-            if (component != null)
+            Kitchener element = context.Kitcheners.FirstOrDefault(rec => rec.Id == id);
+            if (element != null)
             {
-                source.Kitcheners.Remove(component);
+                context.Kitcheners.Remove(element);
+                context.SaveChanges();
             }
             else
             {
