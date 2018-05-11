@@ -7,9 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Unity;
-using Unity.Attributes;
-
+using System.Net.Http;
 using VirtualStorePlace.ConnectingModel;
 using VirtualStorePlace.LogicInterface;
 using VirtualStorePlace.RealiseInterface;
@@ -19,19 +17,14 @@ namespace VirtualStoreView
 {
     public partial class FromKitchener : Form
     {
-        [Dependency]
-        public new IUnityContainer Container { get; set; }
 
         public int Id { set { id = value; } }
 
-        private readonly IKitchenerService service;
-
         private int? id;
 
-        public FromKitchener(IKitchenerService service)
+        public FromKitchener()
         {
             InitializeComponent();
-            this.service = service;
         }
 
         private void FromKitchener_Load(object sender, EventArgs e)
@@ -40,10 +33,15 @@ namespace VirtualStoreView
             {
                 try
                 {
-                    KitchenerUserViewModel view = service.GetElement(id.Value);
-                    if (view != null)
+                    var response = APIClient.GetRequest("api/Kitchener/Get/" + id.Value);
+                    if (response.Result.IsSuccessStatusCode)
                     {
-                        textBoxFIO.Text = view.KitchenerFIO;
+                        var implementer = APIClient.GetElement<KitchenerUserViewModel>(response);
+                        textBoxFIO.Text = implementer.KitchenerFIO;
+                    }
+                    else
+                    {
+                        throw new Exception(APIClient.GetError(response));
                     }
                 }
                 catch (Exception ex)
@@ -62,9 +60,10 @@ namespace VirtualStoreView
             }
             try
             {
+                Task<HttpResponseMessage> response;
                 if (id.HasValue)
                 {
-                    service.UpdElement(new KitchenerConnectingModel
+                    response = APIClient.PostRequest("api/Kitchener/UpdElement", new KitchenerConnectingModel
                     {
                         Id = id.Value,
                         KitchenerFIO = textBoxFIO.Text
@@ -72,14 +71,21 @@ namespace VirtualStoreView
                 }
                 else
                 {
-                    service.AddElement(new KitchenerConnectingModel
+                    response = APIClient.PostRequest("api/Kitchener/AddElement", new KitchenerConnectingModel
                     {
                         KitchenerFIO = textBoxFIO.Text
                     });
                 }
-                MessageBox.Show("Сохранение прошло успешно", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                DialogResult = DialogResult.OK;
-                Close();
+                if (response.Result.IsSuccessStatusCode)
+                {
+                    MessageBox.Show("Сохранение прошло успешно", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    DialogResult = DialogResult.OK;
+                    Close();
+                }
+                else
+                {
+                    throw new Exception(APIClient.GetError(response));
+                }
             }
             catch (Exception ex)
             {

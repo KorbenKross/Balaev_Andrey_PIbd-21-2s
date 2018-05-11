@@ -7,9 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Unity;
-using Unity.Attributes;
-
+using System.Net.Http;
 using VirtualStorePlace.ConnectingModel;
 using VirtualStorePlace.LogicInterface;
 using VirtualStorePlace.RealiseInterface;
@@ -19,22 +17,17 @@ namespace VirtualStoreView
 {
     public partial class FormIngredient : Form
     {
-        [Dependency]
-        public new IUnityContainer Container { get; set; }
 
         public int Id { set { id = value; } }
-
-        private readonly IIngredientService service;
 
         private int? id;
 
         private List<IngredientElementUserViewModel> ingredientElements;
 
 
-        public FormIngredient(IIngredientService service)
+        public FormIngredient()
         {
             InitializeComponent();
-            this.service = service;
         }
 
         private void FormIngredient_Load_1(object sender, EventArgs e)
@@ -43,13 +36,18 @@ namespace VirtualStoreView
             {
                 try
                 {
-                    IngredientUserViewModel view = service.GetElement(id.Value);
-                    if (view != null)
+                    var response = APIClient.GetRequest("api/Ingredient/Get/" + id.Value);
+                    if (response.Result.IsSuccessStatusCode)
                     {
-                        textBoxName.Text = view.IngredientName;
-                        textBoxPrice.Text = view.Price.ToString();
-                        ingredientElements = view.IngredientElement;
+                        var product = APIClient.GetElement<IngredientUserViewModel>(response);
+                        textBoxName.Text = product.IngredientName;
+                        textBoxPrice.Text = product.Price.ToString();
+                        ingredientElements = product.IngredientElement;
                         LoadData();
+                    }
+                    else
+                    {
+                        throw new Exception(APIClient.GetError(response));
                     }
                 }
                 catch (Exception ex)
@@ -86,7 +84,7 @@ namespace VirtualStoreView
 
         private void buttonAdd_Click(object sender, EventArgs e)
         {
-            var form = Container.Resolve<FormIngredientElement>();
+            var form = new FormIngredientElement();
             if (form.ShowDialog() == DialogResult.OK)
             {
                 if (form.Model != null)
@@ -105,7 +103,7 @@ namespace VirtualStoreView
         {
             if (dataGridView.SelectedRows.Count == 1)
             {
-                var form = Container.Resolve<FormIngredientElement>();
+                var form = new FormIngredientElement();
                 form.Model = ingredientElements[dataGridView.SelectedRows[0].Cells[0].RowIndex];
                 if (form.ShowDialog() == DialogResult.OK)
                 {
@@ -158,10 +156,10 @@ namespace VirtualStoreView
             }
             try
             {
-                List<IngredientElementConnectingModel> ingredientElementBM = new List<IngredientElementConnectingModel>();
+                List<IngredientElementConnectingModel> productComponentBM = new List<IngredientElementConnectingModel>();
                 for (int i = 0; i < ingredientElements.Count; ++i)
                 {
-                    ingredientElementBM.Add(new IngredientElementConnectingModel
+                    productComponentBM.Add(new IngredientElementConnectingModel
                     {
                         Id = ingredientElements[i].Id,
                         IngredientId = ingredientElements[i].IngredientId,
@@ -169,28 +167,36 @@ namespace VirtualStoreView
                         Count = ingredientElements[i].Count
                     });
                 }
+                Task<HttpResponseMessage> response;
                 if (id.HasValue)
                 {
-                    service.UpdElement(new IngredientConnectingModel
+                    response = APIClient.PostRequest("api/Ingredient/UpdElement", new IngredientConnectingModel
                     {
                         Id = id.Value,
                         IngredientName = textBoxName.Text,
                         Value = Convert.ToInt32(textBoxPrice.Text),
-                        IngredientElement = ingredientElementBM
+                        IngredientElement = productComponentBM
                     });
                 }
                 else
                 {
-                    service.AddElement(new IngredientConnectingModel
+                    response = APIClient.PostRequest("api/Ingredient/AddElement", new IngredientConnectingModel
                     {
                         IngredientName = textBoxName.Text,
                         Value = Convert.ToInt32(textBoxPrice.Text),
-                        IngredientElement = ingredientElementBM
+                        IngredientElement = productComponentBM
                     });
                 }
-                MessageBox.Show("Сохранение успешно", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                DialogResult = DialogResult.OK;
-                Close();
+                if (response.Result.IsSuccessStatusCode)
+                {
+                    MessageBox.Show("Сохранение прошло успешно", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    DialogResult = DialogResult.OK;
+                    Close();
+                }
+                else
+                {
+                    throw new Exception(APIClient.GetError(response));
+                }
             }
             catch (Exception ex)
             {

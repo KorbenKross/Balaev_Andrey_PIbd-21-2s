@@ -7,8 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Unity;
-using Unity.Attributes;
 
 using VirtualStorePlace.ConnectingModel;
 using VirtualStorePlace.LogicInterface;
@@ -19,42 +17,47 @@ namespace VirtualStoreView
 {
     public partial class FormCustomerSelection : Form
     {
-        [Dependency]
-        public new IUnityContainer Container { get; set; }
 
-        private readonly IBuyerCustomer serviceC;
-
-        private readonly IIngredientService serviceP;
-
-        private readonly IGeneralSelection serviceM;
-
-        public FormCustomerSelection(IBuyerCustomer serviceC, IIngredientService serviceP, IGeneralSelection serviceM)
+        public FormCustomerSelection()
         {
             InitializeComponent();
-            this.serviceC = serviceC;
-            this.serviceP = serviceP;
-            this.serviceM = serviceM;
         }
 
         private void FormCustomerSelection_Load(object sender, EventArgs e)
         {
             try
             {
-                List<BuyerUserViewModel> listC = serviceC.GetList();
-                if (listC != null)
+                var responseC = APIClient.GetRequest("api/Buyer/GetList");
+                if (responseC.Result.IsSuccessStatusCode)
                 {
-                    comboBoxClient.DisplayMember = "BuyerFIO";
-                    comboBoxClient.ValueMember = "Id";
-                    comboBoxClient.DataSource = listC;
-                    comboBoxClient.SelectedItem = null;
+                    List<BuyerUserViewModel> list = APIClient.GetElement<List<BuyerUserViewModel>>(responseC);
+                    if (list != null)
+                    {
+                        comboBoxClient.DisplayMember = "BuyerFIO";
+                        comboBoxClient.ValueMember = "Id";
+                        comboBoxClient.DataSource = list;
+                        comboBoxClient.SelectedItem = null;
+                    }
                 }
-                List<IngredientUserViewModel> listP = serviceP.GetList();
-                if (listP != null)
+                else
                 {
-                    comboBoxProduct.DisplayMember = "IngredientName";
-                    comboBoxProduct.ValueMember = "Id";
-                    comboBoxProduct.DataSource = listP;
-                    comboBoxProduct.SelectedItem = null;
+                    throw new Exception(APIClient.GetError(responseC));
+                }
+                var responseP = APIClient.GetRequest("api/Ingredient/GetList");
+                if (responseP.Result.IsSuccessStatusCode)
+                {
+                    List<IngredientUserViewModel> list = APIClient.GetElement<List<IngredientUserViewModel>>(responseP);
+                    if (list != null)
+                    {
+                        comboBoxProduct.DisplayMember = "IngredientName";
+                        comboBoxProduct.ValueMember = "Id";
+                        comboBoxProduct.DataSource = list;
+                        comboBoxProduct.SelectedItem = null;
+                    }
+                }
+                else
+                {
+                    throw new Exception(APIClient.GetError(responseP));
                 }
             }
             catch (Exception ex)
@@ -70,9 +73,17 @@ namespace VirtualStoreView
                 try
                 {
                     int id = Convert.ToInt32(comboBoxProduct.SelectedValue);
-                    IngredientUserViewModel product = serviceP.GetElement(id);
-                    int count = Convert.ToInt32(textBoxCount.Text);
-                    textBoxSum.Text = (count * product.Price).ToString();
+                    var responseP = APIClient.GetRequest("api/Ingredient/Get/" + id);
+                    if (responseP.Result.IsSuccessStatusCode)
+                    {
+                        IngredientUserViewModel product = APIClient.GetElement<IngredientUserViewModel>(responseP);
+                        int count = Convert.ToInt32(textBoxCount.Text);
+                        textBoxSum.Text = (count * (int)product.Price).ToString();
+                    }
+                    else
+                    {
+                        throw new Exception(APIClient.GetError(responseP));
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -100,16 +111,23 @@ namespace VirtualStoreView
             }
             try
             {
-                serviceM.CreateOrder(new CustomerSelectionModel
+                var response = APIClient.PostRequest("api/General/CreateOrder", new CustomerSelectionModel
                 {
                     BuyerId = Convert.ToInt32(comboBoxClient.SelectedValue),
                     IngredientId = Convert.ToInt32(comboBoxProduct.SelectedValue),
                     Count = Convert.ToInt32(textBoxCount.Text),
                     Sum = Convert.ToInt32(textBoxSum.Text)
                 });
-                MessageBox.Show("Сохранение прошло успешно", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                DialogResult = DialogResult.OK;
-                Close();
+                if (response.Result.IsSuccessStatusCode)
+                {
+                    MessageBox.Show("Сохранение прошло успешно", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    DialogResult = DialogResult.OK;
+                    Close();
+                }
+                else
+                {
+                    throw new Exception(APIClient.GetError(response));
+                }
             }
             catch (Exception ex)
             {

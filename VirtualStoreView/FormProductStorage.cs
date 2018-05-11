@@ -7,10 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Unity;
-using Unity.Attributes;
 using VirtualStorePlace.ConnectingModel;
 using VirtualStorePlace.LogicInterface;
+using System.Net.Http;
 using VirtualStorePlace.RealiseInterface;
 using VirtualStorePlace.UserViewModel;
 
@@ -19,20 +18,14 @@ namespace VirtualStoreView
 
     public partial class FormProductStorage : Form
     {
-
-        [Dependency]
-        public new IUnityContainer Container { get; set; }
-
+       
         public int Id { set { id = value; } }
-
-        private readonly IProductStorageService service;
 
         private int? id;
 
-        public FormProductStorage(IProductStorageService service)
+        public FormProductStorage()
         {
             InitializeComponent();
-            this.service = service;
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
@@ -44,9 +37,10 @@ namespace VirtualStoreView
             }
             try
             {
+                Task<HttpResponseMessage> response;
                 if (id.HasValue)
                 {
-                    service.UpdElement(new ProductStorageConnectingModel
+                    response = APIClient.PostRequest("api/ProductStorage/UpdElement", new ProductStorageConnectingModel
                     {
                         Id = id.Value,
                         StockName = textBoxName.Text
@@ -54,14 +48,21 @@ namespace VirtualStoreView
                 }
                 else
                 {
-                    service.AddElement(new ProductStorageConnectingModel
+                    response = APIClient.PostRequest("api/ProductStorage/AddElement", new ProductStorageConnectingModel
                     {
                         StockName = textBoxName.Text
                     });
                 }
-                MessageBox.Show("Сохранение прошло успешно", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                DialogResult = DialogResult.OK;
-                Close();
+                if (response.Result.IsSuccessStatusCode)
+                {
+                    MessageBox.Show("Сохранение прошло успешно", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    DialogResult = DialogResult.OK;
+                    Close();
+                }
+                else
+                {
+                    throw new Exception(APIClient.GetError(response));
+                }
             }
             catch (Exception ex)
             {
@@ -75,15 +76,20 @@ namespace VirtualStoreView
             {
                 try
                 {
-                    ProductStorageUserViewModel view = service.GetElement(id.Value);
-                    if (view != null)
+                    var response = APIClient.GetRequest("api/ProductStorage/Get/" + id.Value);
+                    if (response.Result.IsSuccessStatusCode)
                     {
-                        textBoxName.Text = view.ProductStorageName;
-                        dataGridView.DataSource = view.ProductStorageElements;
+                        var stock = APIClient.GetElement<ProductStorageUserViewModel>(response);
+                        textBoxName.Text = stock.ProductStorageName;
+                        dataGridView.DataSource = stock.ProductStorageElements;
                         dataGridView.Columns[0].Visible = false;
                         dataGridView.Columns[1].Visible = false;
                         dataGridView.Columns[2].Visible = false;
                         dataGridView.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    }
+                    else
+                    {
+                        throw new Exception(APIClient.GetError(response));
                     }
                 }
                 catch (Exception ex)

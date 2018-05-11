@@ -9,23 +9,16 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using VirtualStorePlace.ConnectingModel;
 using VirtualStorePlace.LogicInterface;
-using Unity;
-using Unity.Attributes;
 using Microsoft.Reporting.WinForms;
 
 namespace VirtualStoreView
 {
     public partial class BuyerOrderForm : Form
     {
-        [Dependency]
-        public new IUnityContainer Container { get; set; }
 
-        private readonly IReportService service;
-
-        public BuyerOrderForm(IReportService service)
+        public BuyerOrderForm()
         {
             InitializeComponent();
-            this.service = service;
         }
 
         
@@ -44,13 +37,20 @@ namespace VirtualStoreView
             {
                 try
                 {
-                    service.SaveClientOrders(new ReportConnectingModel
+                    var response = APIClient.PostRequest("api/Report/SaveClientOrders", new ReportConnectingModel
                     {
                         FileName = sfd.FileName,
                         DateFrom = dateTimePickerFrom.Value,
                         DateTo = dateTimePickerTo.Value
                     });
-                    MessageBox.Show("Выполнено", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (response.Result.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show("Выполнено", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        throw new Exception(APIClient.GetError(response));
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -73,13 +73,21 @@ namespace VirtualStoreView
                                             " по " + dateTimePickerTo.Value.ToShortDateString());
                 reportViewer.LocalReport.SetParameters(parameter);
 
-                var dataSource = service.GetClientOrders(new ReportConnectingModel
+                var response = APIClient.PostRequest("api/Report/GetClientOrders", new ReportConnectingModel
                 {
                     DateFrom = dateTimePickerFrom.Value,
                     DateTo = dateTimePickerTo.Value
                 });
-                ReportDataSource source = new ReportDataSource("DataSetOrders", dataSource);
-                reportViewer.LocalReport.DataSources.Add(source);
+                if (response.Result.IsSuccessStatusCode)
+                {
+                    var dataSource = APIClient.GetElement<List<BuyerOrderForm>>(response);
+                    ReportDataSource source = new ReportDataSource("DataSetOrders", dataSource);
+                    reportViewer.LocalReport.DataSources.Add(source);
+                }
+                else
+                {
+                    throw new Exception(APIClient.GetError(response));
+                }
 
                 reportViewer.RefreshReport();
             }

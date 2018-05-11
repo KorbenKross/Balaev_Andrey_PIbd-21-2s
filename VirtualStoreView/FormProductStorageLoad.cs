@@ -9,34 +9,29 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using VirtualStorePlace.ConnectingModel;
 using VirtualStorePlace.LogicInterface;
-using Unity;
-using Unity.Attributes;
+using VirtualStorePlace.UserViewModel;
+
 
 
 namespace VirtualStoreView
 {
     public partial class FormProductStorageLoad : Form
     {
-        [Dependency]
-        public new IUnityContainer Container { get; set; }
 
-        private readonly IReportService service;
-
-        public FormProductStorageLoad(IReportService service)
+        public FormProductStorageLoad()
         {
             InitializeComponent();
-            this.service = service;
         }
 
         private void FormProductStorageLoad_Load(object sender, EventArgs e)
         {
             try
             {
-                var dict = service.GetStocksLoad();
-                if (dict != null)
+                var response = APIClient.GetRequest("api/Report/GetStocksLoad");
+                if (response.Result.IsSuccessStatusCode)
                 {
                     dataGridView.Rows.Clear();
-                    foreach (var elem in dict)
+                    foreach (var elem in APIClient.GetElement<List<ProductStorageLoadUserViewModel>>(response))
                     {
                         dataGridView.Rows.Add(new object[] { elem.ProductStorageName, "", "" });
                         foreach (var listElem in elem.Elements)
@@ -46,6 +41,10 @@ namespace VirtualStoreView
                         dataGridView.Rows.Add(new object[] { "Итого", "", elem.TotalCount });
                         dataGridView.Rows.Add(new object[] { });
                     }
+                }
+                else
+                {
+                    throw new Exception(APIClient.GetError(response));
                 }
             }
             catch (Exception ex)
@@ -64,17 +63,29 @@ namespace VirtualStoreView
             {
                 try
                 {
-                    service.SaveStocksLoad(new ReportConnectingModel
+                    var response = APIClient.PostRequest("api/Report/SaveProductStoragesLoad", new ReportConnectingModel
                     {
                         FileName = sfd.FileName
                     });
-                    MessageBox.Show("Выполнено", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (response.Result.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show("Выполнено", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        throw new Exception(APIClient.GetError(response));
+                    }
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+
+        private void dataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

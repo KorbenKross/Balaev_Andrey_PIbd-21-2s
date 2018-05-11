@@ -7,8 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Unity;
-using Unity.Attributes;
 
 using VirtualStorePlace.ConnectingModel;
 using VirtualStorePlace.LogicInterface;
@@ -19,31 +17,33 @@ namespace VirtualStoreView
 {
     public partial class BuyerForm : Form
     {
-        [Dependency]
-        public new IUnityContainer Container { get; set; }
         public int Id { set { id = value; } }
-
-        private readonly IBuyerCustomer service;
 
         private int? id;
 
-
-        public BuyerForm(IBuyerCustomer service)
+        public BuyerForm()
         {
             InitializeComponent();
-            this.service = service;
         }
 
         private void LoadData()
         {
             try
             {
-                List<BuyerUserViewModel> list = service.GetList();
-                if (list != null)
+                var response = APIClient.GetRequest("api/Buyer/GetList");
+                if (response.Result.IsSuccessStatusCode)
                 {
-                    dataGridView.DataSource = list;
-                    dataGridView.Columns[0].Visible = false;
-                    dataGridView.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    List<BuyerUserViewModel> list = APIClient.GetElement<List<BuyerUserViewModel>>(response);
+                    if (list != null)
+                    {
+                        dataGridView.DataSource = list;
+                        dataGridView.Columns[0].Visible = false;
+                        dataGridView.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    }
+                }
+                else
+                {
+                    throw new Exception(APIClient.GetError(response));
                 }
             }
             catch (Exception ex)
@@ -54,7 +54,7 @@ namespace VirtualStoreView
 
         private void addBtn_Click(object sender, EventArgs e)
         {
-            var form = Container.Resolve<FormSingleBuyer>();
+            var form = new FormSingleBuyer();
             if (form.ShowDialog() == DialogResult.OK)
             {
                 LoadData();
@@ -65,7 +65,7 @@ namespace VirtualStoreView
         {
             if(dataGridView.SelectedRows.Count == 1)
             {
-                var form = Container.Resolve<FormSingleBuyer>();
+                var form = new FormSingleBuyer();
                 form.Id = Convert.ToInt32(dataGridView.SelectedRows[0].Cells[0].Value);
                 if (form.ShowDialog() == DialogResult.OK)
                 {
@@ -83,7 +83,11 @@ namespace VirtualStoreView
                     int id = Convert.ToInt32(dataGridView.SelectedRows[0].Cells[0].Value);
                     try
                     {
-                        service.DelElement(id);
+                        var response = APIClient.PostRequest("api/Buyer/DelElement", new BuyerConnectingModel { Id = id });
+                        if (!response.Result.IsSuccessStatusCode)
+                        {
+                            throw new Exception(APIClient.GetError(response));
+                        }
                     }
                     catch (Exception ex)
                     {

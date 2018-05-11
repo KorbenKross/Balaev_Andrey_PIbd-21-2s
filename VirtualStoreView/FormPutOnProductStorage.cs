@@ -7,8 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Unity;
-using Unity.Attributes;
 
 using VirtualStorePlace.ConnectingModel;
 using VirtualStorePlace.LogicInterface;
@@ -19,42 +17,48 @@ namespace VirtualStoreView
 {
     public partial class FormPutOnProductStorage : Form
     {
-        [Dependency]
-        public new IUnityContainer Container { get; set; }
 
-        private readonly IProductStorageService serviceS;
-
-        private readonly IElementService serviceC;
-
-        private readonly IGeneralSelection serviceM;
-
-        public FormPutOnProductStorage(IProductStorageService serviceS, IElementService serviceC, IGeneralSelection serviceM)
+        public FormPutOnProductStorage()
         {
             InitializeComponent();
-            this.serviceS = serviceS;
-            this.serviceC = serviceC;
-            this.serviceM = serviceM;
         }
 
         private void FormPutOnProductStorage_Load(object sender, EventArgs e)
         {
+
             try
             {
-                List<ElementUserViewModel> listC = serviceC.GetList();
-                if (listC != null)
+                var responseC = APIClient.GetRequest("api/Element/GetList");
+                if (responseC.Result.IsSuccessStatusCode)
                 {
-                    comboBoxComponent.DisplayMember = "ElementName";
-                    comboBoxComponent.ValueMember = "Id";
-                    comboBoxComponent.DataSource = listC;
-                    comboBoxComponent.SelectedItem = null;
+                    List<ElementUserViewModel> list = APIClient.GetElement<List<ElementUserViewModel>>(responseC);
+                    if (list != null)
+                    {
+                        comboBoxComponent.DisplayMember = "ElementName";
+                        comboBoxComponent.ValueMember = "Id";
+                        comboBoxComponent.DataSource = list;
+                        comboBoxComponent.SelectedItem = null;
+                    }
                 }
-                List<ProductStorageUserViewModel> listS = serviceS.GetList();
-                if (listS != null)
+                else
                 {
-                    comboBoxStock.DisplayMember = "ProductStorageName";
-                    comboBoxStock.ValueMember = "Id";
-                    comboBoxStock.DataSource = listS;
-                    comboBoxStock.SelectedItem = null;
+                    throw new Exception(APIClient.GetError(responseC));
+                }
+                var responseS = APIClient.GetRequest("api/ProductStorage/GetList");
+                if (responseS.Result.IsSuccessStatusCode)
+                {
+                    List<ProductStorageUserViewModel> list = APIClient.GetElement<List<ProductStorageUserViewModel>>(responseS);
+                    if (list != null)
+                    {
+                        comboBoxStock.DisplayMember = "ProductStorageName";
+                        comboBoxStock.ValueMember = "Id";
+                        comboBoxStock.DataSource = list;
+                        comboBoxStock.SelectedItem = null;
+                    }
+                }
+                else
+                {
+                    throw new Exception(APIClient.GetError(responseC));
                 }
             }
             catch (Exception ex)
@@ -82,15 +86,22 @@ namespace VirtualStoreView
             }
             try
             {
-                serviceM.PutComponentOnStock(new ProductStorageElementConnectingModel
+                var response = APIClient.PostRequest("api/General/PutComponentOnStock", new ProductStorageElementConnectingModel
                 {
                     ElementId = Convert.ToInt32(comboBoxComponent.SelectedValue),
                     ProductStorageId = Convert.ToInt32(comboBoxStock.SelectedValue),
                     Count = Convert.ToInt32(textBoxCount.Text)
                 });
-                MessageBox.Show("Сохранение прошло успешно", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                DialogResult = DialogResult.OK;
-                Close();
+                if (response.Result.IsSuccessStatusCode)
+                {
+                    MessageBox.Show("Сохранение прошло успешно", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    DialogResult = DialogResult.OK;
+                    Close();
+                }
+                else
+                {
+                    throw new Exception(APIClient.GetError(response));
+                }
             }
             catch (Exception ex)
             {

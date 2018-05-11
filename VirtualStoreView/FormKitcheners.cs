@@ -7,8 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Unity;
-using Unity.Attributes;
 
 using VirtualStorePlace.ConnectingModel;
 using VirtualStorePlace.LogicInterface;
@@ -19,15 +17,10 @@ namespace VirtualStoreView
 {
     public partial class FormKitcheners : Form
     {
-        [Dependency]
-        public new IUnityContainer Container { get; set; }
 
-        private readonly IKitchenerService service;
-
-        public FormKitcheners(IKitchenerService service)
+        public FormKitcheners()
         {
             InitializeComponent();
-            this.service = service;
         }
 
         private void FormKitcheners_Load(object sender, EventArgs e)
@@ -39,12 +32,20 @@ namespace VirtualStoreView
         {
             try
             {
-                List<KitchenerUserViewModel> list = service.GetList();
-                if (list != null)
+                var response = APIClient.GetRequest("api/Kitchener/GetList");
+                if (response.Result.IsSuccessStatusCode)
                 {
-                    dataGridView.DataSource = list;
-                    dataGridView.Columns[0].Visible = false;
-                    dataGridView.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    List<KitchenerUserViewModel> list = APIClient.GetElement<List<KitchenerUserViewModel>>(response);
+                    if (list != null)
+                    {
+                        dataGridView.DataSource = list;
+                        dataGridView.Columns[0].Visible = false;
+                        dataGridView.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    }
+                }
+                else
+                {
+                    throw new Exception(APIClient.GetError(response));
                 }
             }
             catch (Exception ex)
@@ -56,7 +57,7 @@ namespace VirtualStoreView
 
         private void buttonAdd_Click(object sender, EventArgs e)
         {
-            var form = Container.Resolve<FromKitchener>();
+            var form = new FromKitchener();
             if (form.ShowDialog() == DialogResult.OK)
             {
                 LoadData();
@@ -67,7 +68,7 @@ namespace VirtualStoreView
         {
             if (dataGridView.SelectedRows.Count == 1)
             {
-                var form = Container.Resolve<FromKitchener>();
+                var form = new FromKitchener();
                 form.Id = Convert.ToInt32(dataGridView.SelectedRows[0].Cells[0].Value);
                 if (form.ShowDialog() == DialogResult.OK)
                 {
@@ -85,7 +86,11 @@ namespace VirtualStoreView
                     int id = Convert.ToInt32(dataGridView.SelectedRows[0].Cells[0].Value);
                     try
                     {
-                        service.DelElement(id);
+                        var response = APIClient.PostRequest("api/Kitchener/DelElement", new BuyerConnectingModel { Id = id });
+                        if (!response.Result.IsSuccessStatusCode)
+                        {
+                            throw new Exception(APIClient.GetError(response));
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -93,7 +98,7 @@ namespace VirtualStoreView
                     }
                     LoadData();
                 }
-            }
+}
         }
 
         private void buttonRef_Click(object sender, EventArgs e)

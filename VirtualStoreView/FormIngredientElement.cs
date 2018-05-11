@@ -7,8 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Unity;
-using Unity.Attributes;
 using VirtualStorePlace.ConnectingModel;
 using VirtualStorePlace.LogicInterface;
 using VirtualStorePlace.RealiseInterface;
@@ -18,19 +16,13 @@ namespace VirtualStoreView
 {
     public partial class FormIngredientElement : Form
     {
-        [Dependency]
-        public new IUnityContainer Container { get; set; }
-
         public IngredientElementUserViewModel Model { set { model = value; } get { return model; } }
-
-        private readonly IElementService service;
 
         private IngredientElementUserViewModel model;
 
-        public FormIngredientElement(IElementService service)
+        public FormIngredientElement()
         {
             InitializeComponent();
-            this.service = service;
         }
 
         private void FormIngredientElement_Load(object sender, EventArgs e)
@@ -42,13 +34,17 @@ namespace VirtualStoreView
         {
             try
             {
-                List<ElementUserViewModel> list = service.GetList();
-                if (list != null)
+                var response = APIClient.GetRequest("api/Element/GetList");
+                if (response.Result.IsSuccessStatusCode)
                 {
                     comboBoxComponent.DisplayMember = "ElementName";
                     comboBoxComponent.ValueMember = "Id";
-                    comboBoxComponent.DataSource = list;
+                    comboBoxComponent.DataSource = APIClient.GetElement<List<ElementUserViewModel>>(response);
                     comboBoxComponent.SelectedItem = null;
+                }
+                else
+                {
+                    throw new Exception(APIClient.GetError(response));
                 }
             }
             catch (Exception ex)
@@ -61,6 +57,17 @@ namespace VirtualStoreView
                 comboBoxComponent.SelectedValue = model.ElementId;
                 textBoxCount.Text = model.Count.ToString();
             }
+        }
+
+        private void buttonCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+            Close();
+        }
+
+        private void comboBoxComponent_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
 
         private void buttonSave_Click(object sender, EventArgs e)
@@ -98,17 +105,6 @@ namespace VirtualStoreView
             {
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        private void buttonCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-            Close();
-        }
-
-        private void comboBoxComponent_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

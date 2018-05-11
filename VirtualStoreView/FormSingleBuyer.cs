@@ -6,9 +6,8 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net.Http;
 using System.Windows.Forms;
-using Unity;
-using Unity.Attributes;
 
 using VirtualStorePlace.ConnectingModel;
 using VirtualStorePlace.LogicInterface;
@@ -19,19 +18,14 @@ namespace VirtualStoreView
 {
     public partial class FormSingleBuyer : Form
     {
-        [Dependency]
-        public new IUnityContainer Container { get; set; }
 
         public int Id { set { id = value; } }
 
-        private readonly IBuyerCustomer service;
-
         private int? id;
 
-        public FormSingleBuyer(IBuyerCustomer service)
+        public FormSingleBuyer()
         {
             InitializeComponent();
-            this.service = service;     
         }
 
         private void saveBtn_Click(object sender, EventArgs e)
@@ -43,9 +37,10 @@ namespace VirtualStoreView
             }
             try
             {
+                Task<HttpResponseMessage> response;
                 if (id.HasValue)
                 {
-                    service.UpdElement(new BuyerConnectingModel
+                    response = APIClient.PostRequest("api/Buyer/UpdElement", new BuyerConnectingModel
                     {
                         Id = id.Value,
                         BuyerFIO = textBoxFIO.Text
@@ -53,14 +48,21 @@ namespace VirtualStoreView
                 }
                 else
                 {
-                    service.AddElement(new BuyerConnectingModel
+                    response = APIClient.PostRequest("api/Buyer/AddElement", new BuyerConnectingModel
                     {
                         BuyerFIO = textBoxFIO.Text
                     });
                 }
-                MessageBox.Show("Сохранение прошло успешно", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                DialogResult = DialogResult.OK;
-                Close();
+                if (response.Result.IsSuccessStatusCode)
+                {
+                    MessageBox.Show("Сохранение прошло успешно", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    DialogResult = DialogResult.OK;
+                    Close();
+                }
+                else
+                {
+                    throw new Exception(APIClient.GetError(response));
+                }
             }
             catch (Exception ex)
             {
@@ -80,10 +82,15 @@ namespace VirtualStoreView
             {
                 try
                 {
-                    BuyerUserViewModel view = service.GetElement(id.Value);
-                    if (view != null)
+                    var response = APIClient.GetRequest("api/Buyer/Get/" + id.Value);
+                    if (response.Result.IsSuccessStatusCode)
                     {
-                        textBoxFIO.Text = view.BuyerFIO;
+                        var client = APIClient.GetElement<BuyerUserViewModel>(response);
+                        textBoxFIO.Text = client.BuyerFIO;
+                    }
+                    else
+                    {
+                        throw new Exception(APIClient.GetError(response));
                     }
                 }
                 catch (Exception ex)

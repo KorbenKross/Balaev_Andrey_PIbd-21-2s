@@ -7,8 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Unity;
-using Unity.Attributes;
 
 using VirtualStorePlace.ConnectingModel;
 using VirtualStorePlace.LogicInterface;
@@ -19,34 +17,32 @@ namespace VirtualStoreView
 {
     public partial class FormGeneral : Form
     {
-
-        [Dependency]
-        public new IUnityContainer Container { get; set; }
-
-        private readonly IGeneralSelection service;
-
-        private readonly IReportService reportService;
-
-        public FormGeneral(IGeneralSelection service, IReportService reportService)
+        public FormGeneral()
         {
             InitializeComponent();
-            this.service = service;
-            this.reportService = reportService;
         }
 
         private void LoadData()
         {
             try
             {
-                List<CustomerSelectionUserViewModel> list = service.GetList();
-                if (list != null)
+                var response = APIClient.GetRequest("api/General/GetList");
+                if (response.Result.IsSuccessStatusCode)
                 {
-                    dataGridView.DataSource = list;
-                    dataGridView.Columns[0].Visible = false;
-                    dataGridView.Columns[1].Visible = false;
-                    dataGridView.Columns[3].Visible = false;
-                    dataGridView.Columns[5].Visible = false;
-                    dataGridView.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    List<CustomerSelectionUserViewModel> list = APIClient.GetElement<List<CustomerSelectionUserViewModel>>(response);
+                    if (list != null)
+                    {
+                        dataGridView.DataSource = list;
+                        dataGridView.Columns[0].Visible = false;
+                        dataGridView.Columns[1].Visible = false;
+                        dataGridView.Columns[3].Visible = false;
+                        dataGridView.Columns[5].Visible = false;
+                        dataGridView.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                    }
+                }
+                else
+                {
+                    throw new Exception(APIClient.GetError(response));
                 }
             }
             catch (Exception ex)
@@ -63,54 +59,55 @@ namespace VirtualStoreView
 
         private void buttonCreateOrder_Click(object sender, EventArgs e)
         {
-            var form = Container.Resolve<FormCustomerSelection>();
+            var form = new FormCustomerSelection();
             form.ShowDialog();
             LoadData();
         }
 
         private void клиентыToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var form = Container.Resolve<BuyerForm>();
+            var form = new BuyerForm();
             form.ShowDialog();
         }
 
         private void компонентыToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var form = Container.Resolve<FormElements>();
+            var form = new FormElements();
             form.ShowDialog();
         }
 
         private void изделияToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var form = Container.Resolve<FormIngredients>();
+            var form = new FormIngredients();
             form.ShowDialog();
         }
 
         private void складыToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var form = Container.Resolve<FormProductStorage>();
+            var form = new FormProductStorage();
             form.ShowDialog();
         }
 
         private void сотрудникиToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var form = Container.Resolve<FormKitcheners>();
+            var form = new FormKitcheners();
             form.ShowDialog();
         }
 
         private void пополнитьСкладToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var form = Container.Resolve<FormPutOnProductStorage>();
+            var form = new FormPutOnProductStorage();
             form.ShowDialog();
         }
 
         private void buttonTakeOrderInWork_Click(object sender, EventArgs e)
         {
-
             if (dataGridView.SelectedRows.Count == 1)
             {
-                var form = Container.Resolve<FormTakeFromProductStorage>();
-                form.Id = Convert.ToInt32(dataGridView.SelectedRows[0].Cells[0].Value);
+                var form = new FormTakeFromProductStorage
+                {
+                    Id = Convert.ToInt32(dataGridView.SelectedRows[0].Cells[0].Value)
+                };
                 form.ShowDialog();
                 LoadData();
             }
@@ -123,8 +120,18 @@ namespace VirtualStoreView
                 int id = Convert.ToInt32(dataGridView.SelectedRows[0].Cells[0].Value);
                 try
                 {
-                    service.FinishOrder(id);
-                    LoadData();
+                    var response = APIClient.PostRequest("api/General/FinishOrder", new CustomerSelectionModel
+                    {
+                        Id = id
+                    });
+                    if (response.Result.IsSuccessStatusCode)
+                    {
+                        LoadData();
+                    }
+                    else
+                    {
+                        throw new Exception(APIClient.GetError(response));
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -140,8 +147,18 @@ namespace VirtualStoreView
                 int id = Convert.ToInt32(dataGridView.SelectedRows[0].Cells[0].Value);
                 try
                 {
-                    service.PayOrder(id);
-                    LoadData();
+                    var response = APIClient.PostRequest("api/General/PayOrder", new CustomerSelectionModel
+                    {
+                        Id = id
+                    });
+                    if (response.Result.IsSuccessStatusCode)
+                    {
+                        LoadData();
+                    }
+                    else
+                    {
+                        throw new Exception(APIClient.GetError(response));
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -165,11 +182,18 @@ namespace VirtualStoreView
             {
                 try
                 {
-                    reportService.SaveProductPrice(new ReportConnectingModel
+                    var response = APIClient.PostRequest("api/Report/SaveProductPrice", new ReportConnectingModel
                     {
                         FileName = sfd.FileName
                     });
-                    MessageBox.Show("Выполнено", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (response.Result.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show("Выполнено", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        throw new Exception(APIClient.GetError(response));
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -180,13 +204,13 @@ namespace VirtualStoreView
 
         private void загруженностьСкладовToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            var form = Container.Resolve<FormProductStorageLoad>();
+            var form = new FormProductStorageLoad();           
             form.ShowDialog();
         }
 
         private void заказыКлиентовToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            var form = Container.Resolve<BuyerOrderForm>();
+            var form = new BuyerOrderForm();
             form.ShowDialog();
         }
     }
