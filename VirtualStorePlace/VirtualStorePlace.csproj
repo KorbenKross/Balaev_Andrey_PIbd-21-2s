@@ -36,6 +36,19 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\iTextSharp.5.5.13\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1000\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Word, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\packages\Microsoft.Office.Interop.Word.15.0.4797.1003\lib\net20\Microsoft.Office.Interop.Word.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -57,24 +70,32 @@
     <Compile Include="ConnectingModel\KitchenerConnectingModel.cs" />
     <Compile Include="ConnectingModel\ProductStorageConnectingModel.cs" />
     <Compile Include="ConnectingModel\ProductStorageElementConnectingModel.cs" />
+    <Compile Include="ConnectingModel\ReportConnectingModel.cs" />
     <Compile Include="LogicInterface\IBuyerCustomer.cs" />
     <Compile Include="LogicInterface\IElementService.cs" />
     <Compile Include="LogicInterface\IGeneralSelection.cs" />
     <Compile Include="LogicInterface\IIngredientService.cs" />
     <Compile Include="LogicInterface\IKitchenerService.cs" />
     <Compile Include="LogicInterface\IProductStorageService.cs" />
+    <Compile Include="LogicInterface\IReportService.cs" />
     <Compile Include="Migrations\201803170514599_FirstMigration.cs" />
     <Compile Include="Migrations\201803170514599_FirstMigration.Designer.cs">
       <DependentUpon>201803170514599_FirstMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="RealeseInterfaceBD\BuyerSelectionListBD.cs" />
     <Compile Include="RealeseInterfaceBD\ElementSelectionListBD.cs" />
     <Compile Include="RealeseInterfaceBD\GeneralSelectionListBD.cs" />
     <Compile Include="RealeseInterfaceBD\IngredientSelectionListBD.cs" />
     <Compile Include="RealeseInterfaceBD\KitchenerSelectionListBD.cs" />
     <Compile Include="RealeseInterfaceBD\ProductStorageSelectionListBD.cs" />
+    <Compile Include="RealeseInterfaceBD\ReportServiceBD.cs" />
     <Compile Include="RealiseInterface\BaseListSingleton.cs" />
     <Compile Include="RealiseInterface\BuyerSelectionList.cs" />
     <Compile Include="RealiseInterface\ElementSelectionList.cs" />
@@ -82,6 +103,7 @@
     <Compile Include="RealiseInterface\IngredientSelectionList.cs" />
     <Compile Include="RealiseInterface\KitchenerSelectionList.cs" />
     <Compile Include="RealiseInterface\ProductStorageSelectionList.cs" />
+    <Compile Include="UserViewModel\BuyerOrderModel.cs" />
     <Compile Include="UserViewModel\BuyerUserViewModel.cs" />
     <Compile Include="UserViewModel\CustomerSelectionUserViewModel.cs" />
     <Compile Include="UserViewModel\ElementUserViewModel.cs" />
@@ -89,6 +111,7 @@
     <Compile Include="UserViewModel\IngredientUserViewModel.cs" />
     <Compile Include="UserViewModel\KitchenerUserViewModel.cs" />
     <Compile Include="UserViewModel\ProductStorageElementViewModel.cs" />
+    <Compile Include="UserViewModel\ProductStorageLoadUserViewModel.cs" />
     <Compile Include="UserViewModel\ProductStorageUserViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -100,10 +123,15 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Resources\TIMCYR.TTF" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201803170514599_FirstMigration.resx">
       <DependentUpon>201803170514599_FirstMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

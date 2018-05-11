@@ -39,6 +39,8 @@ namespace VirtualStoreView
             currentContainer.RegisterType<IIngredientService, IngredientSelectionListBD>(new HierarchicalLifetimeManager());
             currentContainer.RegisterType<IProductStorageService, ProductStorageSelectionListBD>(new HierarchicalLifetimeManager());
             currentContainer.RegisterType<IGeneralSelection, GeneralSelectionListBD>(new HierarchicalLifetimeManager());
+            currentContainer.RegisterType<IReportService, ReportServiceBD>(new HierarchicalLifetimeManager());
+
 
             return currentContainer;
         }
