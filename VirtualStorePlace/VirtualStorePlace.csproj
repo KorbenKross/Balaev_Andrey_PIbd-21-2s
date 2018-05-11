@@ -30,7 +30,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -40,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbstractDbContext.cs" />
     <Compile Include="BaseListSingleton.cs" />
     <Compile Include="ConnectingModel\BuyerConnectingModel.cs" />
     <Compile Include="ConnectingModel\CustomerSelectionModel.cs" />
@@ -55,7 +63,18 @@
     <Compile Include="LogicInterface\IIngredientService.cs" />
     <Compile Include="LogicInterface\IKitchenerService.cs" />
     <Compile Include="LogicInterface\IProductStorageService.cs" />
+    <Compile Include="Migrations\201803170514599_FirstMigration.cs" />
+    <Compile Include="Migrations\201803170514599_FirstMigration.Designer.cs">
+      <DependentUpon>201803170514599_FirstMigration.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RealeseInterfaceBD\BuyerSelectionListBD.cs" />
+    <Compile Include="RealeseInterfaceBD\ElementSelectionListBD.cs" />
+    <Compile Include="RealeseInterfaceBD\GeneralSelectionListBD.cs" />
+    <Compile Include="RealeseInterfaceBD\IngredientSelectionListBD.cs" />
+    <Compile Include="RealeseInterfaceBD\KitchenerSelectionListBD.cs" />
+    <Compile Include="RealeseInterfaceBD\ProductStorageSelectionListBD.cs" />
     <Compile Include="RealiseInterface\BaseListSingleton.cs" />
     <Compile Include="RealiseInterface\BuyerSelectionList.cs" />
     <Compile Include="RealiseInterface\ElementSelectionList.cs" />
@@ -77,6 +96,15 @@
       <Project>{471ff54a-962d-4f30-aaee-ef13ba004955}</Project>
       <Name>VirtualStore</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201803170514599_FirstMigration.resx">
+      <DependentUpon>201803170514599_FirstMigration.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

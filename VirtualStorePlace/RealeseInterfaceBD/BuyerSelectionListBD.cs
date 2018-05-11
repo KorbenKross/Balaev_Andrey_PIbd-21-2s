@@ -9,20 +9,20 @@ using VirtualStorePlace.LogicInterface;
 using VirtualStorePlace.UserViewModel;
 using VirtualStore;
 
-namespace VirtualStorePlace.RealiseInterface
+namespace VirtualStorePlace.RealeseInterfaceBD
 {
-    public class BuyerSelectionList : IBuyerCustomer
+    public class BuyerSelectionListBD : IBuyerCustomer
     {
-        private BaseListSingleton source;
+        private AbstractDbContext context;
 
-        public BuyerSelectionList()
+        public BuyerSelectionListBD(AbstractDbContext context)
         {
-            source = BaseListSingleton.GetInstance();
+            this.context = context;
         }
 
         public List<BuyerUserViewModel> GetList()
         {
-            List<BuyerUserViewModel> result = source.Buyers
+            List<BuyerUserViewModel> result = context.Buyers
                 .Select(rec => new BuyerUserViewModel
                 {
                     Id = rec.Id,
@@ -34,62 +34,61 @@ namespace VirtualStorePlace.RealiseInterface
 
         public BuyerUserViewModel GetElement(int id)
         {
-            Buyer component = source.Buyers.FirstOrDefault(rec => rec.Id == id);
-            if (component != null)
+            Buyer element = context.Buyers.FirstOrDefault(rec => rec.Id == id);
+            if (element != null)
             {
                 return new BuyerUserViewModel
                 {
-                    Id = component.Id,
-                    BuyerFIO = component.BuyerFIO
+                    Id = element.Id,
+                    BuyerFIO = element.BuyerFIO
                 };
             }
             throw new Exception("Элемент не найден");
         }
 
-
         public void AddElement(BuyerConnectingModel model)
         {
-            Buyer component = source.Buyers.FirstOrDefault(rec => rec.BuyerFIO == model.BuyerFIO);
-            if (component != null)
+            Buyer element = context.Buyers.FirstOrDefault(rec => rec.BuyerFIO == model.BuyerFIO);
+            if (element != null)
             {
                 throw new Exception("Уже есть клиент с таким ФИО");
             }
-            int maxId = source.Buyers.Count > 0 ? source.Buyers.Max(rec => rec.Id) : 0;
-            source.Buyers.Add(new Buyer
+            context.Buyers.Add(new Buyer
             {
-                Id = maxId + 1,
                 BuyerFIO = model.BuyerFIO
             });
+            context.SaveChanges();
         }
 
         public void UpdElement(BuyerConnectingModel model)
         {
-            Buyer component = source.Buyers.FirstOrDefault(rec =>
+            Buyer element = context.Buyers.FirstOrDefault(rec =>
                                     rec.BuyerFIO == model.BuyerFIO && rec.Id != model.Id);
-            if (component != null)
+            if (element != null)
             {
                 throw new Exception("Уже есть клиент с таким ФИО");
             }
-            component = source.Buyers.FirstOrDefault(rec => rec.Id == model.Id);
-            if (component == null)
+            element = context.Buyers.FirstOrDefault(rec => rec.Id == model.Id);
+            if (element == null)
             {
                 throw new Exception("Элемент не найден");
             }
-            component.BuyerFIO = model.BuyerFIO;
+            element.BuyerFIO = model.BuyerFIO;
+            context.SaveChanges();
         }
 
         public void DelElement(int id)
         {
-            Buyer component = source.Buyers.FirstOrDefault(rec => rec.Id == id);
-            if (component != null)
+            Buyer element = context.Buyers.FirstOrDefault(rec => rec.Id == id);
+            if (element != null)
             {
-                source.Buyers.Remove(component);
+                context.Buyers.Remove(element);
+                context.SaveChanges();
             }
             else
             {
                 throw new Exception("Элемент не найден");
             }
         }
-
     }
 }

@@ -92,10 +92,5 @@ namespace VirtualStoreView
             DialogResult = DialogResult.Cancel;
             Close();
         }
-
-        private void comboBoxImplementer_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
     }
 }
