@@ -33,19 +33,15 @@ namespace VirtualStoreView
             {
                 try
                 {
-                    var response = APIClient.GetRequest("api/Kitchener/Get/" + id.Value);
-                    if (response.Result.IsSuccessStatusCode)
-                    {
-                        var implementer = APIClient.GetElement<KitchenerUserViewModel>(response);
-                        textBoxFIO.Text = implementer.KitchenerFIO;
-                    }
-                    else
-                    {
-                        throw new Exception(APIClient.GetError(response));
-                    }
+                    var implementer = Task.Run(() => APIClient.GetRequestData<KitchenerUserViewModel>("api/Kitchener/Get/" + id.Value)).Result;
+                    textBoxFIO.Text = implementer.KitchenerFIO;
                 }
                 catch (Exception ex)
                 {
+                    while (ex.InnerException != null)
+                    {
+                        ex = ex.InnerException;
+                    }
                     MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -58,39 +54,37 @@ namespace VirtualStoreView
                 MessageBox.Show("Заполните ФИО", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            try
+            string fio = textBoxFIO.Text;
+            Task task;
+            if (id.HasValue)
             {
-                Task<HttpResponseMessage> response;
-                if (id.HasValue)
+                task = Task.Run(() => APIClient.PostRequestData("api/Kitchener/UpdElement", new KitchenerConnectingModel
                 {
-                    response = APIClient.PostRequest("api/Kitchener/UpdElement", new KitchenerConnectingModel
-                    {
-                        Id = id.Value,
-                        KitchenerFIO = textBoxFIO.Text
-                    });
-                }
-                else
-                {
-                    response = APIClient.PostRequest("api/Kitchener/AddElement", new KitchenerConnectingModel
-                    {
-                        KitchenerFIO = textBoxFIO.Text
-                    });
-                }
-                if (response.Result.IsSuccessStatusCode)
-                {
-                    MessageBox.Show("Сохранение прошло успешно", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    DialogResult = DialogResult.OK;
-                    Close();
-                }
-                else
-                {
-                    throw new Exception(APIClient.GetError(response));
-                }
+                    Id = id.Value,
+                    KitchenerFIO = fio
+                }));
             }
-            catch (Exception ex)
+            else
             {
+                task = Task.Run(() => APIClient.PostRequestData("api/Kitchener/AddElement", new KitchenerConnectingModel
+                {
+                    KitchenerFIO = fio
+                }));
+            }
+
+            task.ContinueWith((prevTask) => MessageBox.Show("Сохранение прошло успешно. Обновите список", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information),
+                TaskContinuationOptions.OnlyOnRanToCompletion);
+            task.ContinueWith((prevTask) =>
+            {
+                var ex = (Exception)prevTask.Exception;
+                while (ex.InnerException != null)
+                {
+                    ex = ex.InnerException;
+                }
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            }, TaskContinuationOptions.OnlyOnFaulted);
+
+            Close();
         }
 
         private void buttonCancel_Click(object sender, EventArgs e)

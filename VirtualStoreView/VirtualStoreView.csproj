@@ -86,6 +86,7 @@
     <Reference Include="System.Net.Http.Formatting, Version=5.2.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.4\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -194,6 +195,7 @@
     <Compile Include="FromKitchener.Designer.cs">
       <DependentUpon>FromKitchener.cs</DependentUpon>
     </Compile>
+    <Compile Include="HttpErrorMessage.cs" />
     <Compile Include="ProductStorages.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -283,6 +285,14 @@
     <ProjectReference Include="..\VirtualStorePlace\VirtualStorePlace.csproj">
       <Project>{d52c7a2b-0ad1-47be-90ce-09336520881f}</Project>
       <Name>VirtualStorePlace</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VirtualStoreRestApi\VirtualStoreRestApi.csproj">
+      <Project>{c69d8cc4-cbda-4242-a844-8a965eea23f2}</Project>
+      <Name>VirtualStoreRestApi</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\VisualStore\VirtualStore.csproj">
+      <Project>{471ff54a-962d-4f30-aaee-ef13ba004955}</Project>
+      <Name>VirtualStore</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

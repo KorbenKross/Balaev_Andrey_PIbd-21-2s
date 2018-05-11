@@ -37,25 +37,21 @@ namespace VirtualStoreView
                     MessageBox.Show("Не указан заказ", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     Close();
                 }
-                var response = APIClient.GetRequest("api/Kitchener/GetList");
-                if(response.Result.IsSuccessStatusCode)
+                List<KitchenerUserViewModel> list = Task.Run(() => APIClient.GetRequestData<List<KitchenerUserViewModel>>("api/Kitchener/GetList")).Result;
+                if (list != null)
                 {
-                    List<KitchenerUserViewModel> list = APIClient.GetElement<List<KitchenerUserViewModel>>(response);
-                    if (list != null)
-                    {
-                        comboBoxImplementer.DisplayMember = "KitchenerFIO";
-                        comboBoxImplementer.ValueMember = "Id";
-                        comboBoxImplementer.DataSource = list;
-                        comboBoxImplementer.SelectedItem = null;
-                    }
+                    comboBoxImplementer.DisplayMember = "KitchenerFIO";
+                    comboBoxImplementer.ValueMember = "Id";
+                    comboBoxImplementer.DataSource = list;
+                    comboBoxImplementer.SelectedItem = null;
                 }
-                else
-                {
-                    throw new Exception(APIClient.GetError(response));
-                }                
             }
             catch (Exception ex)
             {
+                while (ex.InnerException != null)
+                {
+                    ex = ex.InnerException;
+                }
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -69,24 +65,33 @@ namespace VirtualStoreView
             }
             try
             {
-                var response = APIClient.PostRequest("api/General/TakeOrderInWork", new CustomerSelectionModel
+                int implementerId = Convert.ToInt32(comboBoxImplementer.SelectedValue);
+                Task task = Task.Run(() => APIClient.PostRequestData("api/General/TakeOrderInWork", new CustomerSelectionModel
                 {
                     Id = id.Value,
-                    KitchenerId = Convert.ToInt32(comboBoxImplementer.SelectedValue)
-                });
-                if (response.Result.IsSuccessStatusCode)
+                    KitchenerId = implementerId
+                }));
+
+                task.ContinueWith((prevTask) => MessageBox.Show("Заказ передан в работу. Обновите список", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information),
+                    TaskContinuationOptions.OnlyOnRanToCompletion);
+                task.ContinueWith((prevTask) =>
                 {
-                    MessageBox.Show("Сохранение прошло успешно", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    DialogResult = DialogResult.OK;
-                    Close();
-                }
-                else
-                {
-                    throw new Exception(APIClient.GetError(response));
-                }
+                    var ex = (Exception)prevTask.Exception;
+                    while (ex.InnerException != null)
+                    {
+                        ex = ex.InnerException;
+                    }
+                    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }, TaskContinuationOptions.OnlyOnFaulted);
+
+                Close();
             }
             catch (Exception ex)
             {
+                while (ex.InnerException != null)
+                {
+                    ex = ex.InnerException;
+                }
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

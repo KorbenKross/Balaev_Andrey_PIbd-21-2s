@@ -27,41 +27,30 @@ namespace VirtualStoreView
         {
             try
             {
-                var responseC = APIClient.GetRequest("api/Buyer/GetList");
-                if (responseC.Result.IsSuccessStatusCode)
+                List<BuyerUserViewModel> listC = Task.Run(() => APIClient.GetRequestData<List<BuyerUserViewModel>>("api/Buyer/GetList")).Result;
+                if (listC != null)
                 {
-                    List<BuyerUserViewModel> list = APIClient.GetElement<List<BuyerUserViewModel>>(responseC);
-                    if (list != null)
-                    {
-                        comboBoxClient.DisplayMember = "BuyerFIO";
-                        comboBoxClient.ValueMember = "Id";
-                        comboBoxClient.DataSource = list;
-                        comboBoxClient.SelectedItem = null;
-                    }
+                    comboBoxClient.DisplayMember = "BuyerFIO";
+                    comboBoxClient.ValueMember = "Id";
+                    comboBoxClient.DataSource = listC;
+                    comboBoxClient.SelectedItem = null;
                 }
-                else
+
+                List<IngredientUserViewModel> listP = Task.Run(() => APIClient.GetRequestData<List<IngredientUserViewModel>>("api/Ingredient/GetList")).Result;
+                if (listP != null)
                 {
-                    throw new Exception(APIClient.GetError(responseC));
-                }
-                var responseP = APIClient.GetRequest("api/Ingredient/GetList");
-                if (responseP.Result.IsSuccessStatusCode)
-                {
-                    List<IngredientUserViewModel> list = APIClient.GetElement<List<IngredientUserViewModel>>(responseP);
-                    if (list != null)
-                    {
-                        comboBoxProduct.DisplayMember = "IngredientName";
-                        comboBoxProduct.ValueMember = "Id";
-                        comboBoxProduct.DataSource = list;
-                        comboBoxProduct.SelectedItem = null;
-                    }
-                }
-                else
-                {
-                    throw new Exception(APIClient.GetError(responseP));
+                    comboBoxProduct.DisplayMember = "IngredientName";
+                    comboBoxProduct.ValueMember = "Id";
+                    comboBoxProduct.DataSource = listP;
+                    comboBoxProduct.SelectedItem = null;
                 }
             }
             catch (Exception ex)
             {
+                while (ex.InnerException != null)
+                {
+                    ex = ex.InnerException;
+                }
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -73,20 +62,16 @@ namespace VirtualStoreView
                 try
                 {
                     int id = Convert.ToInt32(comboBoxProduct.SelectedValue);
-                    var responseP = APIClient.GetRequest("api/Ingredient/Get/" + id);
-                    if (responseP.Result.IsSuccessStatusCode)
-                    {
-                        IngredientUserViewModel product = APIClient.GetElement<IngredientUserViewModel>(responseP);
-                        int count = Convert.ToInt32(textBoxCount.Text);
-                        textBoxSum.Text = (count * (int)product.Price).ToString();
-                    }
-                    else
-                    {
-                        throw new Exception(APIClient.GetError(responseP));
-                    }
+                    IngredientUserViewModel product = Task.Run(() => APIClient.GetRequestData<IngredientUserViewModel>("api/Ingredient/Get/" + id)).Result;
+                    int count = Convert.ToInt32(textBoxCount.Text);
+                    textBoxSum.Text = (count * (int)product.Price).ToString();
                 }
                 catch (Exception ex)
                 {
+                    while (ex.InnerException != null)
+                    {
+                        ex = ex.InnerException;
+                    }
                     MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -109,30 +94,31 @@ namespace VirtualStoreView
                 MessageBox.Show("Выберите изделие", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            try
+            int clientId = Convert.ToInt32(comboBoxClient.SelectedValue);
+            int productId = Convert.ToInt32(comboBoxProduct.SelectedValue);
+            int count = Convert.ToInt32(textBoxCount.Text);
+            int sum = Convert.ToInt32(textBoxSum.Text);
+            Task task = Task.Run(() => APIClient.PostRequestData("api/General/CreateOrder", new CustomerSelectionModel
             {
-                var response = APIClient.PostRequest("api/General/CreateOrder", new CustomerSelectionModel
-                {
-                    BuyerId = Convert.ToInt32(comboBoxClient.SelectedValue),
-                    IngredientId = Convert.ToInt32(comboBoxProduct.SelectedValue),
-                    Count = Convert.ToInt32(textBoxCount.Text),
-                    Sum = Convert.ToInt32(textBoxSum.Text)
-                });
-                if (response.Result.IsSuccessStatusCode)
-                {
-                    MessageBox.Show("Сохранение прошло успешно", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    DialogResult = DialogResult.OK;
-                    Close();
-                }
-                else
-                {
-                    throw new Exception(APIClient.GetError(response));
-                }
-            }
-            catch (Exception ex)
+                BuyerId = clientId,
+                IngredientId = productId,
+                Count = count,
+                Sum = sum
+            }));
+
+            task.ContinueWith((prevTask) => MessageBox.Show("Сохранение прошло успешно. Обновите список", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information),
+                TaskContinuationOptions.OnlyOnRanToCompletion);
+            task.ContinueWith((prevTask) =>
             {
+                var ex = (Exception)prevTask.Exception;
+                while (ex.InnerException != null)
+                {
+                    ex = ex.InnerException;
+                }
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            }, TaskContinuationOptions.OnlyOnFaulted);
+
+            Close();
         }
 
         private void textBoxCount_TextChanged(object sender, EventArgs e)

@@ -25,44 +25,32 @@ namespace VirtualStoreView
 
         private void FormPutOnProductStorage_Load(object sender, EventArgs e)
         {
-
             try
             {
-                var responseC = APIClient.GetRequest("api/Element/GetList");
-                if (responseC.Result.IsSuccessStatusCode)
+                List<ElementUserViewModel> listC = Task.Run(() => APIClient.GetRequestData<List<ElementUserViewModel>>("api/Element/GetList")).Result;
+                if (listC != null)
                 {
-                    List<ElementUserViewModel> list = APIClient.GetElement<List<ElementUserViewModel>>(responseC);
-                    if (list != null)
-                    {
-                        comboBoxComponent.DisplayMember = "ElementName";
-                        comboBoxComponent.ValueMember = "Id";
-                        comboBoxComponent.DataSource = list;
-                        comboBoxComponent.SelectedItem = null;
-                    }
+                    comboBoxComponent.DisplayMember = "ElementName";
+                    comboBoxComponent.ValueMember = "Id";
+                    comboBoxComponent.DataSource = listC;
+                    comboBoxComponent.SelectedItem = null;
                 }
-                else
+
+                List<ProductStorageUserViewModel> listS = Task.Run(() => APIClient.GetRequestData<List<ProductStorageUserViewModel>>("api/ProductStorage/GetList")).Result;
+                if (listS != null)
                 {
-                    throw new Exception(APIClient.GetError(responseC));
-                }
-                var responseS = APIClient.GetRequest("api/ProductStorage/GetList");
-                if (responseS.Result.IsSuccessStatusCode)
-                {
-                    List<ProductStorageUserViewModel> list = APIClient.GetElement<List<ProductStorageUserViewModel>>(responseS);
-                    if (list != null)
-                    {
-                        comboBoxStock.DisplayMember = "ProductStorageName";
-                        comboBoxStock.ValueMember = "Id";
-                        comboBoxStock.DataSource = list;
-                        comboBoxStock.SelectedItem = null;
-                    }
-                }
-                else
-                {
-                    throw new Exception(APIClient.GetError(responseC));
+                    comboBoxStock.DisplayMember = "ProductStorageName";
+                    comboBoxStock.ValueMember = "Id";
+                    comboBoxStock.DataSource = listS;
+                    comboBoxStock.SelectedItem = null;
                 }
             }
             catch (Exception ex)
             {
+                while (ex.InnerException != null)
+                {
+                    ex = ex.InnerException;
+                }
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -86,25 +74,36 @@ namespace VirtualStoreView
             }
             try
             {
-                var response = APIClient.PostRequest("api/General/PutComponentOnStock", new ProductStorageElementConnectingModel
+                int componentId = Convert.ToInt32(comboBoxComponent.SelectedValue);
+                int stockId = Convert.ToInt32(comboBoxStock.SelectedValue);
+                int count = Convert.ToInt32(textBoxCount.Text);
+                Task task = Task.Run(() => APIClient.PostRequestData("api/General/PutComponentOnStock", new ProductStorageElementConnectingModel
                 {
-                    ElementId = Convert.ToInt32(comboBoxComponent.SelectedValue),
-                    ProductStorageId = Convert.ToInt32(comboBoxStock.SelectedValue),
-                    Count = Convert.ToInt32(textBoxCount.Text)
-                });
-                if (response.Result.IsSuccessStatusCode)
+                    ElementId = componentId,
+                    ProductStorageId = stockId,
+                    Count = count
+                }));
+
+                task.ContinueWith((prevTask) => MessageBox.Show("Склад пополнен", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information),
+                    TaskContinuationOptions.OnlyOnRanToCompletion);
+                task.ContinueWith((prevTask) =>
                 {
-                    MessageBox.Show("Сохранение прошло успешно", "Сообщение", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    DialogResult = DialogResult.OK;
-                    Close();
-                }
-                else
-                {
-                    throw new Exception(APIClient.GetError(response));
-                }
+                    var ex = (Exception)prevTask.Exception;
+                    while (ex.InnerException != null)
+                    {
+                        ex = ex.InnerException;
+                    }
+                    MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }, TaskContinuationOptions.OnlyOnFaulted);
+
+                Close();
             }
             catch (Exception ex)
             {
+                while (ex.InnerException != null)
+                {
+                    ex = ex.InnerException;
+                }
                 MessageBox.Show(ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
