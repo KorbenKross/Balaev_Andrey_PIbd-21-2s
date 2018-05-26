@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VirtualStore
 {
@@ -19,9 +19,9 @@ namespace VirtualStore
         public decimal Cost { get; set; }
 
         [ForeignKey("IngredientId")]
-        public virtual List<CustomerSelection> CustomerSelection { get; set; }
+        public virtual List<CustomerSelection> Orders { get; set; }
 
         [ForeignKey("IngredientId")]
-        public virtual List<IngredientElement> IngredientElements { get; set; }
+        public virtual List<IngredientElement> ProductComponents { get; set; }
     }
 }

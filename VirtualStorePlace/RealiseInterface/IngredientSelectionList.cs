@@ -20,67 +20,61 @@ namespace VirtualStorePlace.RealiseInterface
             source = BaseListSingleton.GetInstance();
         }
 
-
         public List<IngredientUserViewModel> GetList()
         {
-            List<IngredientUserViewModel> result = source.Ingredients
-                .Select(rec => new IngredientUserViewModel
+            List<IngredientUserViewModel> result = new List<IngredientUserViewModel>();
+            for (int i = 0; i < source.Ingredients.Count; ++i)
+            {
+                // требуется дополнительно получить список компонентов для изделия и их количество
+                List<IngredientElementUserViewModel> ingredientElements = new List<IngredientElementUserViewModel>();
+                //////////////////////////////////////////////////////////
+                for (int j = 0; j < source.IngredientElements.Count; ++j)
                 {
-                    Id = rec.Id,
-                    IngredientName = rec.IngredientName,
-                    Price = rec.Cost,
-                    IngredientElement = source.IngredientElements
-                            .Where(recPC => recPC.IngredientId == rec.Id)
-                            .Select(recPC => new IngredientElementUserViewModel
+                    if (source.IngredientElements[j].IngredientId == source.Ingredients[i].Id)
+                    {
+                        string componentName = string.Empty;
+                        for (int k = 0; k < source.Elements.Count; ++k)
+                        {
+                            if (source.IngredientElements[j].ElementId == source.Elements[k].Id)
                             {
-                                Id = recPC.Id,
-                                IngredientId = recPC.IngredientId,
-                                ElementId = recPC.ElementId,
-                                ElementName = source.Elements
-                                    .FirstOrDefault(recC => recC.Id == recPC.ElementId)?.ElementName,
-                                Count = recPC.Count
-                            })
-                            .ToList()
-                })
-                .ToList();
+                                componentName = source.Elements[k].ElementName;
+                                break;
+                            }
+                        }
+                        ingredientElements.Add(new IngredientElementUserViewModel
+                        {
+                            Id = source.IngredientElements[j].Id,
+                            IngredientId = source.IngredientElements[j].IngredientId,
+                            ElementId = source.IngredientElements[j].ElementId,
+                            ElementName = componentName,
+                            Count = source.IngredientElements[j].Count
+                        });
+                    }
+                }
+                result.Add(new IngredientUserViewModel
+                {
+                    Id = source.Ingredients[i].Id,
+                    IngredientName = source.Ingredients[i].IngredientName,
+                    Price = source.Ingredients[i].Cost,
+                    IngredientElement = ingredientElements
+                });
+            }
             return result;
         }
-
-        public IngredientUserViewModel GetElement(int id)
-        {
-            Ingredient component = source.Ingredients.FirstOrDefault(rec => rec.Id == id);
-            if (component != null)
-            {
-                return new IngredientUserViewModel
-                {
-                    Id = component.Id,
-                    IngredientName = component.IngredientName,
-                    Price = component.Cost,
-                    IngredientElement = source.IngredientElements
-                            .Where(recPC => recPC.IngredientId == component.Id)
-                            .Select(recPC => new IngredientElementUserViewModel
-                            {
-                                Id = recPC.Id,
-                                IngredientId = recPC.IngredientId,
-                                ElementId = recPC.ElementId,
-                                ElementName = source.Elements
-                                        .FirstOrDefault(recC => recC.Id == recPC.ElementId)?.ElementName,
-                                Count = recPC.Count
-                            })
-                            .ToList()
-                };
-            }
-            throw new Exception("Элемент не найден");
-        }
-
         public void AddElement(IngredientConnectingModel model)
         {
-            Ingredient component = source.Ingredients.FirstOrDefault(rec => rec.IngredientName == model.IngredientName);
-            if (component != null)
+            int maxId = 0;
+            for (int i = 0; i < source.Ingredients.Count; ++i)
             {
-                throw new Exception("Уже есть изделие с таким названием");
+                if (source.Ingredients[i].Id > maxId)
+                {
+                    maxId = source.Ingredients[i].Id;
+                }
+                if (source.Ingredients[i].IngredientName == model.IngredientName)
+                {
+                    throw new Exception("Уже есть изделие с таким названием");
+                }
             }
-            int maxId = source.Ingredients.Count > 0 ? source.Ingredients.Max(rec => rec.Id) : 0;
             source.Ingredients.Add(new Ingredient
             {
                 Id = maxId + 1,
@@ -88,102 +82,187 @@ namespace VirtualStorePlace.RealiseInterface
                 Cost = model.Value
             });
             // компоненты для изделия
-            int maxPCId = source.IngredientElements.Count > 0 ?
-                                    source.IngredientElements.Max(rec => rec.Id) : 0;
+            int maxPCId = 0;
+            for (int i = 0; i < source.IngredientElements.Count; ++i)
+            {
+                if (source.IngredientElements[i].Id > maxPCId)
+                {
+                    maxPCId = source.IngredientElements[i].Id;
+                }
+            }
             // убираем дубли по компонентам
-            var groupComponents = model.IngredientElement
-                                        .GroupBy(rec => rec.ElementId)
-                                        .Select(rec => new
-                                        {
-                                            ElementId = rec.Key,
-                                            Count = rec.Sum(r => r.Count)
-                                        });
+            for (int i = 0; i < model.IngredientElement.Count; ++i)
+            {
+                for (int j = 1; j < model.IngredientElement.Count; ++j)
+                {
+                    if (model.IngredientElement[i].ElementId ==
+                        model.IngredientElement[j].ElementId)
+                    {
+                        model.IngredientElement[i].Count +=
+                            model.IngredientElement[j].Count;
+                        model.IngredientElement.RemoveAt(j--);
+                    }
+                }
+            }
             // добавляем компоненты
-            foreach (var groupComponent in groupComponents)
+            for (int i = 0; i < model.IngredientElement.Count; ++i)
             {
                 source.IngredientElements.Add(new IngredientElement
                 {
                     Id = ++maxPCId,
                     IngredientId = maxId + 1,
-                    ElementId = groupComponent.ElementId,
-                    Count = groupComponent.Count
+                    ElementId = model.IngredientElement[i].ElementId,
+                    Count = model.IngredientElement[i].Count
                 });
             }
         }
 
         public void UpdElement(IngredientConnectingModel model)
         {
-            Ingredient component = source.Ingredients.FirstOrDefault(rec =>
-                                        rec.IngredientName == model.IngredientName && rec.Id != model.Id);
-            if (component != null)
+            int index = -1;
+            for (int i = 0; i < source.Ingredients.Count; ++i)
             {
-                throw new Exception("Уже есть суши с таким названием");
-            }
-            component = source.Ingredients.FirstOrDefault(rec => rec.Id == model.Id);
-            if (component == null)
-            {
-                throw new Exception("Компонент не найден");
-            }
-            component.IngredientName = model.IngredientName;
-            component.Cost = model.Value;
-
-            int maxPCId = source.IngredientElements.Count > 0 ? source.IngredientElements.Max(rec => rec.Id) : 0;
-            // обновляем существуюущие компоненты
-            var compIds = model.IngredientElement.Select(rec => rec.ElementId).Distinct();
-            var updateComponents = source.IngredientElements
-                                            .Where(rec => rec.IngredientId == model.Id &&
-                                           compIds.Contains(rec.ElementId));
-            foreach (var updateComponent in updateComponents)
-            {
-                updateComponent.Count = model.IngredientElement
-                                                .FirstOrDefault(rec => rec.Id == updateComponent.Id).Count;
-            }
-            source.IngredientElements.RemoveAll(rec => rec.IngredientId == model.Id &&
-                                       !compIds.Contains(rec.ElementId));
-            // новые записи
-            var groupComponents = model.IngredientElement
-                                        .Where(rec => rec.Id == 0)
-                                        .GroupBy(rec => rec.ElementId)
-                                        .Select(rec => new
-                                        {
-                                            ElementId = rec.Key,
-                                            Count = rec.Sum(r => r.Count)
-                                        });
-            foreach (var groupComponent in groupComponents)
-            {
-                IngredientElement elementPC = source.IngredientElements
-                                        .FirstOrDefault(rec => rec.IngredientId == model.Id &&
-                                                        rec.ElementId == groupComponent.ElementId);
-                if (elementPC != null)
+                if (source.Ingredients[i].Id == model.Id)
                 {
-                    elementPC.Count += groupComponent.Count;
+                    index = i;
                 }
-                else
+                if (source.Ingredients[i].IngredientName == model.IngredientName &&
+                    source.Ingredients[i].Id != model.Id)
                 {
-                    source.IngredientElements.Add(new IngredientElement
+                    throw new Exception("Уже есть изделие с таким названием");
+                }
+            }
+            if (index == -1)
+            {
+                throw new Exception("Элемент не найден");
+            }
+            source.Ingredients[index].IngredientName = model.IngredientName;
+            source.Ingredients[index].Cost = model.Value;
+            int maxPCId = 0;
+            for (int i = 0; i < source.IngredientElements.Count; ++i)
+            {
+                if (source.IngredientElements[i].Id > maxPCId)
+                {
+                    maxPCId = source.IngredientElements[i].Id;
+                }
+            }
+            // обновляем существуюущие компоненты
+            for (int i = 0; i < source.IngredientElements.Count; ++i)
+            {
+                if (source.IngredientElements[i].IngredientId == model.Id)
+                {
+                    bool flag = true;
+                    for (int j = 0; j < model.IngredientElement.Count; ++j)
                     {
-                        Id = ++maxPCId,
-                        IngredientId = model.Id,
-                        ElementId = groupComponent.ElementId,
-                        Count = groupComponent.Count
-                    });
+                        // если встретили, то изменяем количество
+                        if (source.IngredientElements[i].Id == model.IngredientElement[j].Id)
+                        {
+                            source.IngredientElements[i].Count = model.IngredientElement[j].Count;
+                            flag = false;
+                            break;
+                        }
+                    }
+                    // если не встретили, то удаляем
+                    if (flag)
+                    {
+                        source.IngredientElements.RemoveAt(i--);
+                    }
+                }
+            }
+            // новые записи
+            for (int i = 0; i < model.IngredientElement.Count; ++i)
+            {
+                if (model.IngredientElement[i].Id == 0)
+                {
+                    // ищем дубли
+                    for (int j = 0; j < source.IngredientElements.Count; ++j)
+                    {
+                        if (source.IngredientElements[j].IngredientId == model.Id &&
+                            source.IngredientElements[j].ElementId == model.IngredientElement[i].ElementId)
+                        {
+                            source.IngredientElements[j].Count += model.IngredientElement[i].Count;
+                            model.IngredientElement[i].Id = source.IngredientElements[j].Id;
+                            break;
+                        }
+                    }
+                    // если не нашли дубли, то новая запись
+                    if (model.IngredientElement[i].Id == 0)
+                    {
+                        source.IngredientElements.Add(new IngredientElement
+                        {
+                            Id = ++maxPCId,
+                            IngredientId = model.Id,
+                            ElementId = model.IngredientElement[i].ElementId,
+                            Count = model.IngredientElement[i].Count
+                        });
+                    }
                 }
             }
         }
 
+        public IngredientUserViewModel GetElement(int id)
+        {
+            for (int i = 0; i < source.Ingredients.Count; ++i)
+            {
+                // требуется дополнительно получить список компонентов для изделия и их количество
+                List<IngredientElementUserViewModel> ingredientElements = new List<IngredientElementUserViewModel>();
+                for (int j = 0; j < source.IngredientElements.Count; ++j)
+                {
+                    if (source.IngredientElements[j].IngredientId == source.Ingredients[i].Id)
+                    {
+                        string elementName = string.Empty;
+                        for (int k = 0; k < source.Elements.Count; ++k)
+                        {
+                            if (source.IngredientElements[j].IngredientId == source.Elements[k].Id)
+                            {
+                                elementName = source.Elements[k].ElementName;
+                                break;
+                            }
+                        }
+                        ingredientElements.Add(new IngredientElementUserViewModel
+                        {
+                            Id = source.IngredientElements[j].Id,
+                            IngredientId = source.IngredientElements[j].IngredientId,
+                            ElementId = source.IngredientElements[j].IngredientId,
+                            ElementName = elementName,
+                            Count = source.IngredientElements[j].Count
+                        });
+                    }
+                }
+                if (source.Ingredients[i].Id == id)
+                {
+                    return new IngredientUserViewModel
+                    {
+                        Id = source.Ingredients[i].Id,
+                        IngredientName = source.Ingredients[i].IngredientName,
+                        Price = source.Ingredients[i].Cost,
+                        IngredientElement = ingredientElements
+                    };
+                }
+            }
+
+            throw new Exception("Элемент не найден");
+        }
+
         public void DelElement(int id)
         {
-            Ingredient component = source.Ingredients.FirstOrDefault(rec => rec.Id == id);
-            if (component != null)
+            // удаяем записи по компонентам при удалении изделия
+            for (int i = 0; i < source.IngredientElements.Count; ++i)
             {
-                // удаяем записи по компонентам при удалении изделия
-                source.IngredientElements.RemoveAll(rec => rec.IngredientId == id);
-                source.Ingredients.Remove(component);
+                if (source.IngredientElements[i].IngredientId == id)
+                {
+                    source.IngredientElements.RemoveAt(i--);
+                }
             }
-            else
+            for (int i = 0; i < source.Ingredients.Count; ++i)
             {
-                throw new Exception("Элемент не найден");
+                if (source.Ingredients[i].Id == id)
+                {
+                    source.Ingredients.RemoveAt(i);
+                    return;
+                }
             }
+            throw new Exception("Элемент не найден");
         }
     }
 }

@@ -1,0 +1,41 @@
+﻿@model VirtualStore.ProductStorage
+@{
+    ViewBag.Title = "ProductStorages";
+}
+
+<style>
+    .dataTeble {
+        margin-top: 50px;
+    }
+
+    input {
+        margin-bottom: 50px;
+        margin-top: 50px;
+    }
+</style>
+<h2>Склады</h2>
+<form method="post">
+    <input type="submit" name="action" value="Add" />
+    <input type="submit" name="action" value="Change" />
+    <input type="submit" name="action" value="Delete" />
+    <input type="submit" name="action" value="Update" />
+    <br>
+    <table class="dataTeble">
+        @*@Html.TextBox("DataList")*@
+    </table>
+    @using VirtualStore;
+    @using VirtualStorePlace.LogicInterface;
+    @using VirtualStorePlace.ConnectingModel;
+    @using VirtualStorePlace.UserViewModel;
+    <select name="productStorageList" multiple>
+        @{ int i = 0;
+            foreach (ProductStorageUserViewModel st in @ViewBag.DataList)
+            {
+                i++;
+                <option value="@i">@st.Id @st.ProductStorageName</option>
+            }
+        }
+    </select>
+</form>
+
+

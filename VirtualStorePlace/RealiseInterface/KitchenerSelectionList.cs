@@ -22,39 +22,48 @@ namespace VirtualStorePlace.RealiseInterface
 
         public List<KitchenerUserViewModel> GetList()
         {
-            List<KitchenerUserViewModel> result = source.Kitcheners
-                .Select(rec => new KitchenerUserViewModel
+            List<KitchenerUserViewModel> result = new List<KitchenerUserViewModel>();
+            for (int i = 0; i < source.Kitcheners.Count; ++i)
+            {
+                result.Add(new KitchenerUserViewModel
                 {
-                    Id = rec.Id,
-                    KitchenerFIO = rec.KitchenerFIO
-                })
-                .ToList();
+                    Id = source.Kitcheners[i].Id,
+                    KitchenerFIO = source.Kitcheners[i].KitchenerFIO
+                });
+            }
             return result;
         }
 
         public KitchenerUserViewModel GetElement(int id)
         {
-            Kitchener component = source.Kitcheners.FirstOrDefault(rec => rec.Id == id);
-            if (component != null)
+            for (int i = 0; i < source.Kitcheners.Count; ++i)
             {
-                return new KitchenerUserViewModel
+                if (source.Kitcheners[i].Id == id)
                 {
-                    Id = component.Id,
-                    KitchenerFIO = component.KitchenerFIO
-                };
+                    return new KitchenerUserViewModel
+                    {
+                        Id = source.Kitcheners[i].Id,
+                        KitchenerFIO = source.Kitcheners[i].KitchenerFIO
+                    };
+                }
             }
             throw new Exception("Элемент не найден");
         }
 
-
         public void AddElement(KitchenerConnectingModel model)
         {
-            Kitchener component = source.Kitcheners.FirstOrDefault(rec => rec.KitchenerFIO == model.KitchenerFIO);
-            if (component != null)
+            int maxId = 0;
+            for (int i = 0; i < source.Kitcheners.Count; ++i)
             {
-                throw new Exception("Уже есть повар с таким ФИО");
+                if (source.Kitcheners[i].Id > maxId)
+                {
+                    maxId = source.Kitcheners[i].Id;
+                }
+                if (source.Kitcheners[i].KitchenerFIO == model.KitchenerFIO)
+                {
+                    throw new Exception("Уже есть сотрудник с таким ФИО");
+                }
             }
-            int maxId = source.Kitcheners.Count > 0 ? source.Kitcheners.Max(rec => rec.Id) : 0;
             source.Kitcheners.Add(new Kitchener
             {
                 Id = maxId + 1,
@@ -64,31 +73,37 @@ namespace VirtualStorePlace.RealiseInterface
 
         public void UpdElement(KitchenerConnectingModel model)
         {
-            Kitchener component = source.Kitcheners.FirstOrDefault(rec =>
-                                        rec.KitchenerFIO == model.KitchenerFIO && rec.Id != model.Id);
-            if (component != null)
+            int index = -1;
+            for (int i = 0; i < source.Kitcheners.Count; ++i)
             {
-                throw new Exception("Уже есть сотрудник с таким ФИО");
+                if (source.Kitcheners[i].Id == model.Id)
+                {
+                    index = i;
+                }
+                if (source.Kitcheners[i].KitchenerFIO == model.KitchenerFIO &&
+                    source.Kitcheners[i].Id != model.Id)
+                {
+                    throw new Exception("Уже есть сотрудник с таким ФИО");
+                }
             }
-            component = source.Kitcheners.FirstOrDefault(rec => rec.Id == model.Id);
-            if (component == null)
+            if (index == -1)
             {
                 throw new Exception("Элемент не найден");
             }
-            component.KitchenerFIO = model.KitchenerFIO;
+            source.Kitcheners[index].KitchenerFIO = model.KitchenerFIO;
         }
 
         public void DelElement(int id)
         {
-            Kitchener component = source.Kitcheners.FirstOrDefault(rec => rec.Id == id);
-            if (component != null)
+            for (int i = 0; i < source.Kitcheners.Count; ++i)
             {
-                source.Kitcheners.Remove(component);
+                if (source.Kitcheners[i].Id == id)
+                {
+                    source.Kitcheners.RemoveAt(i);
+                    return;
+                }
             }
-            else
-            {
-                throw new Exception("Элемент не найден");
-            }
+            throw new Exception("Элемент не найден");
         }
     }
 }

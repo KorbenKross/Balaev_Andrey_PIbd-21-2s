@@ -22,32 +22,68 @@ namespace VirtualStorePlace.RealiseInterface
 
         public List<CustomerSelectionUserViewModel> GetList()
         {
-            List<CustomerSelectionUserViewModel> result = source.CustomerSelections
-                .Select(rec => new CustomerSelectionUserViewModel
+            List<CustomerSelectionUserViewModel> result = new List<CustomerSelectionUserViewModel>();
+            for (int i = 0; i < source.CustomerSelections.Count; ++i)
+            {
+                string buyerFIO = string.Empty;
+                for (int j = 0; j < source.Buyers.Count; ++j)
                 {
-                    Id = rec.Id,
-                    BuyerId = rec.BuyerId,
-                    IngredientId = rec.IngredientId,
-                    KitchinerId = rec.KitchenerId,
-                    DateCreate = rec.DateCreate.ToLongDateString(),
-                    DateCook = rec.DateImplement?.ToLongDateString(),
-                    Status = rec.Status.ToString(),
-                    Count = rec.Count,
-                    Sum = rec.Sum,
-                    BuyerFIO = source.Buyers
-                                    .FirstOrDefault(recC => recC.Id == rec.BuyerId)?.BuyerFIO,
-                    IngredientName = source.Ingredients
-                                    .FirstOrDefault(recP => recP.Id == rec.IngredientId)?.IngredientName,
-                    KitchinerName = source.Kitcheners
-                                    .FirstOrDefault(recI => recI.Id == rec.KitchenerId)?.KitchenerFIO
-                })
-                .ToList();
+                    if (source.Buyers[j].Id == source.CustomerSelections[i].BuyerId)
+                    {
+                        buyerFIO = source.Buyers[j].BuyerFIO;
+                        break;
+                    }
+                }
+                string ingredientName = string.Empty;
+                for (int j = 0; j < source.Ingredients.Count; ++j)
+                {
+                    if (source.Ingredients[j].Id == source.CustomerSelections[i].IngredientId)
+                    {
+                        ingredientName = source.Ingredients[j].IngredientName;
+                        break;
+                    }
+                }
+                string kitchenerFIO = string.Empty;
+                if (source.CustomerSelections[i].KitchenerId.HasValue)
+                {
+                    for (int j = 0; j < source.Kitcheners.Count; ++j)
+                    {
+                        if (source.Kitcheners[j].Id == source.CustomerSelections[i].KitchenerId.Value)
+                        {
+                            kitchenerFIO = source.Kitcheners[j].KitchenerFIO;
+                            break;
+                        }
+                    }
+                }
+                result.Add(new CustomerSelectionUserViewModel
+                {
+                    Id = source.CustomerSelections[i].Id,
+                    BuyerId = source.CustomerSelections[i].BuyerId,
+                    BuyerFIO = buyerFIO,
+                    IngredientId = source.CustomerSelections[i].IngredientId,
+                    IngredientName = ingredientName,
+                    KitchinerId = source.CustomerSelections[i].KitchenerId,
+                    KitchinerName = kitchenerFIO,
+                    Count = source.CustomerSelections[i].Count,
+                    Sum = source.CustomerSelections[i].Sum,
+                    DateCreate = source.CustomerSelections[i].DateCreate.ToLongDateString(),
+                    DateCook = source.CustomerSelections[i].DateImplement?.ToLongDateString(),
+                    Status = source.CustomerSelections[i].Status.ToString()
+                });
+            }
             return result;
         }
 
         public void CreateOrder(CustomerSelectionModel model)
         {
-            int maxId = source.CustomerSelections.Count > 0 ? source.CustomerSelections.Max(rec => rec.Id) : 0;
+            int maxId = 0;
+            for (int i = 0; i < source.CustomerSelections.Count; ++i)
+            {
+                if (source.CustomerSelections[i].Id > maxId)
+                {
+                    maxId = source.Buyers[i].Id;
+                }
+            }
             source.CustomerSelections.Add(new CustomerSelection
             {
                 Id = maxId + 1,
@@ -62,50 +98,73 @@ namespace VirtualStorePlace.RealiseInterface
 
         public void TakeOrderInWork(CustomerSelectionModel model)
         {
-            CustomerSelection element = source.CustomerSelections.FirstOrDefault(rec => rec.Id == model.Id);
-            if (element == null)
+            int index = -1;
+            for (int i = 0; i < source.CustomerSelections.Count; ++i)
+            {
+                if (source.CustomerSelections[i].Id == model.Id)
+                {
+                    index = i;
+                    break;
+                }
+            }
+            if (index == -1)
             {
                 throw new Exception("Элемент не найден");
             }
             // смотрим по количеству компонентов на складах
-            var ingredientElements = source.IngredientElements.Where(rec => rec.IngredientId == element.IngredientId);
-            foreach (var ingredientElement in ingredientElements)
+            for (int i = 0; i < source.IngredientElements.Count; ++i)
             {
-                int countOnStocks = source.ProductStorageElement
-                                            .Where(rec => rec.ElementId == ingredientElement.ElementId)
-                                            .Sum(rec => rec.Count);
-                if (countOnStocks < ingredientElement.Count * element.Count)
+                if (source.IngredientElements[i].IngredientId == source.CustomerSelections[index].IngredientId)
                 {
-                    var componentName = source.Elements
-                                    .FirstOrDefault(rec => rec.Id == ingredientElement.ElementId);
-                    throw new Exception("Не достаточно компонента " + componentName?.ElementName +
-                        " требуется " + ingredientElement.Count + ", в наличии " + countOnStocks);
+                    int countOnStocks = 0;
+                    for (int j = 0; j < source.ProductStorageElement.Count; ++j)
+                    {
+                        if (source.ProductStorageElement[j].ElementId == source.IngredientElements[i].ElementId)
+                        {
+                            countOnStocks += source.ProductStorageElement[j].Count;
+                        }
+                    }
+                    if (countOnStocks < source.IngredientElements[i].Count * source.CustomerSelections[index].Count)
+                    {
+                        for (int j = 0; j < source.Elements.Count; ++j)
+                        {
+                            if (source.Elements[j].Id == source.IngredientElements[i].ElementId)
+                            {
+                                throw new Exception("Не достаточно компонента " + source.Elements[j].ElementName +
+                                    " требуется " + source.IngredientElements[i].Count + ", в наличии " + countOnStocks);
+                            }
+                        }
+                    }
                 }
             }
             // списываем
-            foreach (var ingredientElement in ingredientElements)
+            for (int i = 0; i < source.IngredientElements.Count; ++i)
             {
-                int countOnStocks = ingredientElement.Count * element.Count;
-                var productStorageElements = source.ProductStorageElement
-                                            .Where(rec => rec.ElementId == ingredientElement.ElementId);
-                foreach (var productStorageElement in productStorageElements)
+                if (source.IngredientElements[i].IngredientId == source.CustomerSelections[index].IngredientId)
                 {
-                    // компонентов на одном слкаде может не хватать
-                    if (productStorageElement.Count >= countOnStocks)
+                    int countOnStocks = source.IngredientElements[i].Count * source.CustomerSelections[index].Count;
+                    for (int j = 0; j < source.ProductStorageElement.Count; ++j)
                     {
-                        productStorageElement.Count -= countOnStocks;
-                        break;
-                    }
-                    else
-                    {
-                        countOnStocks -= productStorageElement.Count;
-                        productStorageElement.Count = 0;
+                        if (source.ProductStorageElement[j].ElementId == source.IngredientElements[i].ElementId)
+                        {
+                            // компонентов на одном слкаде может не хватать
+                            if (source.ProductStorageElement[j].Count >= countOnStocks)
+                            {
+                                source.ProductStorageElement[j].Count -= countOnStocks;
+                                break;
+                            }
+                            else
+                            {
+                                countOnStocks -= source.ProductStorageElement[j].Count;
+                                source.ProductStorageElement[j].Count = 0;
+                            }
+                        }
                     }
                 }
             }
-            element.KitchenerId = model.KitchenerId;
-            element.DateImplement = DateTime.Now;
-            element.Status = CustomerSelectionCondition.Готовиться;
+            source.CustomerSelections[index].KitchenerId = model.KitchenerId;
+            source.CustomerSelections[index].DateImplement = DateTime.Now;
+            source.CustomerSelections[index].Status = CustomerSelectionCondition.Готовиться;
         }
 
         public void FinishOrder(int id)

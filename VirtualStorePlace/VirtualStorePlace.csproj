@@ -39,6 +39,8 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.Entity.Design" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -48,6 +50,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractDbContext.cs" />
+    <Compile Include="Attributies\CustomInterfaceAttribute.cs" />
+    <Compile Include="Attributies\CustomMethodAttribute.cs" />
     <Compile Include="BaseListSingleton.cs" />
     <Compile Include="ConnectingModel\BuyerConnectingModel.cs" />
     <Compile Include="ConnectingModel\CustomerSelectionModel.cs" />
@@ -63,18 +67,18 @@
     <Compile Include="LogicInterface\IIngredientService.cs" />
     <Compile Include="LogicInterface\IKitchenerService.cs" />
     <Compile Include="LogicInterface\IProductStorageService.cs" />
-    <Compile Include="Migrations\201803170514599_FirstMigration.cs" />
-    <Compile Include="Migrations\201803170514599_FirstMigration.Designer.cs">
-      <DependentUpon>201803170514599_FirstMigration.cs</DependentUpon>
+    <Compile Include="Migrations\201805252223200_FirstMigration.cs" />
+    <Compile Include="Migrations\201805252223200_FirstMigration.Designer.cs">
+      <DependentUpon>201805252223200_FirstMigration.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RealeseInterfaceBD\BuyerSelectionListBD.cs" />
-    <Compile Include="RealeseInterfaceBD\ElementSelectionListBD.cs" />
-    <Compile Include="RealeseInterfaceBD\GeneralSelectionListBD.cs" />
-    <Compile Include="RealeseInterfaceBD\IngredientSelectionListBD.cs" />
-    <Compile Include="RealeseInterfaceBD\KitchenerSelectionListBD.cs" />
-    <Compile Include="RealeseInterfaceBD\ProductStorageSelectionListBD.cs" />
+    <Compile Include="RealiseInterfaceBD\BuyerServiceBD.cs" />
+    <Compile Include="RealiseInterfaceBD\ElementServiceBD.cs" />
+    <Compile Include="RealiseInterfaceBD\GeneralServiceBD.cs" />
+    <Compile Include="RealiseInterfaceBD\IngredientServiceBD.cs" />
+    <Compile Include="RealiseInterfaceBD\KitchenerServiceBD.cs" />
+    <Compile Include="RealiseInterfaceBD\ProductStorageServiceBD.cs" />
     <Compile Include="RealiseInterface\BaseListSingleton.cs" />
     <Compile Include="RealiseInterface\BuyerSelectionList.cs" />
     <Compile Include="RealiseInterface\ElementSelectionList.cs" />
@@ -102,8 +106,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201803170514599_FirstMigration.resx">
-      <DependentUpon>201803170514599_FirstMigration.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201805252223200_FirstMigration.resx">
+      <DependentUpon>201805252223200_FirstMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

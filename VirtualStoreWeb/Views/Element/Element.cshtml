@@ -1,0 +1,15 @@
+﻿@model VirtualStore.Element
+@{
+    ViewBag.Title = "Element";
+}
+
+<h2>Create element</h2>
+<form action="/Element/Element" method="post">
+    <div class="item">
+        <label>Название:</label>
+        <input name="ElementName" value="Element" />
+    </div>
+    <input type="submit" name="action" value="Сохранить" />
+</form>
+
+

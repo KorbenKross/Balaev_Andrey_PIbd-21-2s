@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VirtualStore
 {
@@ -16,9 +16,9 @@ namespace VirtualStore
         public string ElementName { get; set; }
 
         [ForeignKey("ElementId")]
-        public virtual List<IngredientElement> IngredientElements { get; set; }
+        public virtual List<IngredientElement> ProductComponents { get; set; }
 
         [ForeignKey("ElementId")]
-        public virtual List<ProductStorageElement> ProductStorageElements { get; set; }
+        public virtual List<IngredientElement> StockComponents { get; set; }
     }
 }

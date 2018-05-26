@@ -39,10 +39,11 @@
             this.comboBoxImplementer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxImplementer.FormattingEnabled = true;
             this.comboBoxImplementer.Location = new System.Drawing.Point(127, 7);
-            this.comboBoxImplementer.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.comboBoxImplementer.Margin = new System.Windows.Forms.Padding(4);
             this.comboBoxImplementer.Name = "comboBoxImplementer";
             this.comboBoxImplementer.Size = new System.Drawing.Size(288, 24);
             this.comboBoxImplementer.TabIndex = 1;
+            this.comboBoxImplementer.SelectedIndexChanged += new System.EventHandler(this.comboBoxImplementer_SelectedIndexChanged);
             // 
             // labelImplementer
             // 
@@ -57,7 +58,7 @@
             // buttonCancel
             // 
             this.buttonCancel.Location = new System.Drawing.Point(271, 52);
-            this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonCancel.Margin = new System.Windows.Forms.Padding(4);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(100, 28);
             this.buttonCancel.TabIndex = 9;
@@ -68,7 +69,7 @@
             // buttonSave
             // 
             this.buttonSave.Location = new System.Drawing.Point(163, 52);
-            this.buttonSave.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buttonSave.Margin = new System.Windows.Forms.Padding(4);
             this.buttonSave.Name = "buttonSave";
             this.buttonSave.Size = new System.Drawing.Size(100, 28);
             this.buttonSave.TabIndex = 8;
@@ -85,7 +86,7 @@
             this.Controls.Add(this.buttonSave);
             this.Controls.Add(this.comboBoxImplementer);
             this.Controls.Add(this.labelImplementer);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "FormTakeFromProductStorage";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Отдать заказ в работу";

@@ -103,5 +103,10 @@ namespace VirtualStoreView
             DialogResult = DialogResult.Cancel;
             Close();
         }
+
+        private void comboBoxStock_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

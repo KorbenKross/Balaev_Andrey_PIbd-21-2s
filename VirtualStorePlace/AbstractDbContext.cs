@@ -3,20 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
-
-using VirtualStorePlace.ConnectingModel;
-using VirtualStorePlace.LogicInterface;
-using VirtualStorePlace.UserViewModel;
 using VirtualStore;
 
 namespace VirtualStorePlace
-{    
-    [Table("AbstractDatabase")]
+{
     public class AbstractDbContext : DbContext
     {
-        public AbstractDbContext()
+        public AbstractDbContext() : base("AbstractDatabaseWeb")
         {
             //настройки конфигурации для entity
             Configuration.ProxyCreationEnabled = false;
@@ -39,5 +33,5 @@ namespace VirtualStorePlace
         public virtual DbSet<ProductStorage> ProductStorages { get; set; }
 
         public virtual DbSet<ProductStorageElement> ProductStorageElements { get; set; }
-    }    
+    }
 }

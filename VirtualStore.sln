@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualStorePlace", "Virtua
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualStoreView", "VirtualStoreView\VirtualStoreView.csproj", "{621A07A9-2543-41E1-8453-9AF735A00FF4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VirtualStoreWeb", "VirtualStoreWeb\VirtualStoreWeb.csproj", "{6053B6D4-FBE9-4558-AE02-F2F19F566590}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{621A07A9-2543-41E1-8453-9AF735A00FF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{621A07A9-2543-41E1-8453-9AF735A00FF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{621A07A9-2543-41E1-8453-9AF735A00FF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6053B6D4-FBE9-4558-AE02-F2F19F566590}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6053B6D4-FBE9-4558-AE02-F2F19F566590}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6053B6D4-FBE9-4558-AE02-F2F19F566590}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6053B6D4-FBE9-4558-AE02-F2F19F566590}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

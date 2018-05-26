@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "IngredientElement";
+}
+
+<style>
+    select {
+        margin-bottom: 50px;
+    }
+
+    .item {
+        margin-bottom: 30px;
+    }
+</style>
+<h2><b>IngredientElement</b></h2><br />
+<form action="/IngredientElement/IngredientElement" id="ingedientElement" method="post">
+    <select name="selectedItem" form="ingedientElement">
+        @using VirtualStore;
+        @using VirtualStorePlace.LogicInterface;
+        @using VirtualStorePlace.ConnectingModel;
+        @using VirtualStorePlace.UserViewModel;
+        @{ int i = 0;
+            foreach (ElementUserViewModel st in @ViewBag.DataList)
+            {
+                i++;
+                <option value="@i">@st.ElementName @i</option>
+            }
+        }
+    </select>
+    <div class="item">
+        <label>Количество:</label>
+        @{
+            if (ViewBag.DataCountBox != null)
+            {
+
+                <input name="Count" value=@ViewBag.DataCountBox />
+            }
+            else
+            {
+                <input name="Count" value="" />
+            }
+        }
+    </div>
+    <input type="submit" name="action" value="Сохранить" />
+</form>

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace VirtualStore
 {
@@ -16,6 +16,6 @@ namespace VirtualStore
         public string ProductStorageName { get; set; }
 
         [ForeignKey("ProductStorageId")]
-        public virtual List<ProductStorageElement> ProductStorageElement { get; set; }
+        public virtual List<ProductStorageElement> ProductStorageElements { get; set; }
     }
 }
