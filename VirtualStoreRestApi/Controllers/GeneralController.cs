@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Web.Http;
 using VirtualStorePlace.LogicInterface;
 using VirtualStorePlace.ConnectingModel;
+using VirtualStoreRestApi.Services;
 
 namespace VirtualStoreRestApi.Controllers
 {
@@ -57,6 +58,18 @@ namespace VirtualStoreRestApi.Controllers
         public void PutComponentOnStock(ProductStorageElementConnectingModel model)
         {
             _service.PutComponentOnStock(model);
+        }
+
+        [HttpGet]
+        public IHttpActionResult GetInfo()
+        {
+            ReflectionService service = new ReflectionService();
+            var list = service.GetInfoByAssembly();
+            if (list == null)
+            {
+                InternalServerError(new Exception("Нет данных"));
+            }
+            return Ok(list);
         }
     }
 }

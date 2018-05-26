@@ -277,7 +277,9 @@
     </Compile>
     <EmbeddedResource Include="Report1.rdlc" />
     <None Include="packages.config" />
-    <None Include="Properties\DataSources\VirtualStorePlace.UserViewModel.BuyerOrderModel.datasource" />
+    <None Include="Properties\DataSources\VirtualStorePlace.UserViewModel.BuyerOrderModel.datasource">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
