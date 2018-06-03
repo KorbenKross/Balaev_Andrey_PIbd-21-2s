@@ -38,28 +38,3 @@ C:\Users\Kross\source\repos\TechProg(Lab11)WEB\VirtualStorePlace\obj\Debug\Virtu
 C:\Users\Kross\source\repos\TechProg(Lab11)WEB\VirtualStorePlace\bin\Debug\VisualStore.dll.config
 C:\Users\Kross\source\repos\TechProg(Lab11)WEB\VirtualStorePlace\obj\Debug\VirtualStorePlace.Migrations.FirstMigration.resources
 C:\Users\Kross\source\repos\TechProg(Lab11)WEB\VirtualStorePlace\obj\Debug\VirtualStorePlace.csproj.GenerateResource.Cache
-C:\Users\Kross\source\repos\TechProg(Lab11)WEB — копия\VirtualStorePlace\obj\Debug\VirtualStorePlace.csprojResolveAssemblyReference.cache
-C:\Users\Kross\source\repos\TechProg(Lab11)WEB — копия\VirtualStorePlace\obj\Debug\VirtualStorePlace.Migrations.FirstMigration.resources
-C:\Users\Kross\source\repos\TechProg(Lab11)WEB — копия\VirtualStorePlace\obj\Debug\VirtualStorePlace.csproj.GenerateResource.Cache
-C:\Users\Kross\source\repos\TechProg(Lab11)WEB — копия\VirtualStorePlace\obj\Debug\VirtualStorePlace.csproj.CoreCompileInputs.cache
-C:\Users\Kross\source\repos\TechProg(Lab11)WEB — копия\VirtualStorePlace\obj\Debug\VirtualStorePlace.dll
-C:\Users\Kross\source\repos\TechProg(Lab11)WEB — копия\VirtualStorePlace\obj\Debug\VirtualStorePlace.pdb
-C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VirtualStorePlace\obj\Debug\VirtualStorePlace.csprojResolveAssemblyReference.cache
-C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VirtualStorePlace\obj\Debug\VirtualStorePlace.Migrations.FirstMigration.resources
-C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VirtualStorePlace\obj\Debug\VirtualStorePlace.Properties.Resources.resources
-C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VirtualStorePlace\obj\Debug\VirtualStorePlace.csproj.GenerateResource.Cache
-C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VirtualStorePlace\obj\Debug\VirtualStorePlace.csproj.CoreCompileInputs.cache
-C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VirtualStorePlace\obj\Debug\VirtualStorePlace.dll
-C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VirtualStorePlace\obj\Debug\VirtualStorePlace.pdb
-C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VirtualStorePlace\bin\Debug\VirtualStorePlace.dll.config
-C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VirtualStorePlace\bin\Debug\VirtualStorePlace.dll
-C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VirtualStorePlace\bin\Debug\VirtualStorePlace.pdb
-C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VirtualStorePlace\bin\Debug\EntityFramework.dll
-C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VirtualStorePlace\bin\Debug\EntityFramework.SqlServer.dll
-C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VirtualStorePlace\bin\Debug\itextsharp.dll
-C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VirtualStorePlace\bin\Debug\VisualStore.dll
-C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VirtualStorePlace\bin\Debug\VisualStore.pdb
-C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VirtualStorePlace\bin\Debug\VisualStore.dll.config
-C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VirtualStorePlace\bin\Debug\EntityFramework.xml
-C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VirtualStorePlace\bin\Debug\EntityFramework.SqlServer.xml
-C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VirtualStorePlace\bin\Debug\itextsharp.xml

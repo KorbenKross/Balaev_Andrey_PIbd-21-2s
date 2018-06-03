@@ -56,7 +56,6 @@ namespace VirtualStoreWeb
             container.RegisterType<IIngredientService, IngredientServiceBD>(new HierarchicalLifetimeManager());
             container.RegisterType<IProductStorageService, ProductStorageServiceBD>(new HierarchicalLifetimeManager());
             container.RegisterType<IGeneralSelection, GeneralServiceBD>(new HierarchicalLifetimeManager());
-            container.RegisterType<IReportService, ReportServiceBD>(new HierarchicalLifetimeManager());
         }
     }
 }

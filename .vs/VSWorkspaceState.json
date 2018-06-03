@@ -2,14 +2,14 @@
   "ExpandedNodes": [
     "",
     "\\VirtualStorePlace",
+    "\\VirtualStorePlace\\Attributies",
     "\\VirtualStorePlace\\ConnectingModel",
     "\\VirtualStoreView",
     "\\VirtualStoreWeb",
+    "\\VirtualStoreWeb\\App_Start",
     "\\VirtualStoreWeb\\Content",
     "\\VirtualStoreWeb\\Controllers",
-    "\\VirtualStoreWeb\\Views",
-    "\\VirtualStoreWeb\\Views\\Ingredient",
-    "\\VirtualStoreWeb\\Views\\Ingredients"
+    "\\VirtualStoreWeb\\Views"
   ],
   "SelectedNode": "\\VirtualStore.sln",
   "PreviewInSolutionExplorer": false
