@@ -1,0 +1,13 @@
+﻿@model VirtualStore.Kitchener
+@{
+    ViewBag.Title = "Kitchener";
+}
+
+<h2>Create kitchener</h2>
+<form action="/Kitchener/Kitchener" method="post">
+    <div class="item">
+        <label>Название:</label>
+        <input name="KitchenerFIO" value="Kitchener" />
+    </div>
+    <input type="submit" name="action" value="Сохранить" />
+</form>

@@ -1,0 +1,48 @@
+﻿@{
+    ViewBag.Title = "CustomerSelection";
+}
+
+<style>
+    select {
+        margin-bottom: 50px;
+    }
+
+    .item {
+        margin-bottom: 30px;
+    }
+</style>
+<h2><b>CustomerSelection</b></h2><br />
+<form action="/CustomerSelection/CustomerSelection" id="CustomerSelection" method="post">
+    <select name="selectedItem1" form="CustomerSelection">
+        @using VirtualStore;
+        @using VirtualStorePlace.LogicInterface;
+        @using VirtualStorePlace.ConnectingModel;
+        @using VirtualStorePlace.UserViewModel;
+        @{ int i1 = 0;
+        foreach (BuyerUserViewModel st1 in @ViewBag.listC)
+        {
+            i1++;
+            <option value="@i1">Клиент: @i1</option>
+    }
+        }
+    </select>
+    <select name="selectedItem2" form="CustomerSelection">
+        @{ int i2 = 0;
+            foreach (IngredientUserViewModel st2 in @ViewBag.listP)
+            {
+                i2++;
+                <option value="@i2">Суша: @i2</option>
+            }
+        }
+    </select>
+    <div class="item">
+        <label>Количество:</label>
+        <input name="Count" value="Количество" />
+    </div>    
+    <div class="item">
+        <label>Сумма:</label>
+        <input disabled name="sum" value=@ViewBag.sumPrice />
+        <input type="submit" name="action" value="Подсчитать" />
+    </div>
+    <input type="submit" name="action" value="Сохранить" />
+</form>

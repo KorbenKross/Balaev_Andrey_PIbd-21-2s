@@ -1,0 +1,50 @@
+C:\Users\Kross\source\repos\VisualStore\VisualStore\bin\Debug\VisualStore.dll
+C:\Users\Kross\source\repos\VisualStore\VisualStore\bin\Debug\VisualStore.pdb
+C:\Users\Kross\source\repos\VisualStore\VisualStore\obj\Debug\VirtualStore.csprojResolveAssemblyReference.cache
+C:\Users\Kross\source\repos\VisualStore\VisualStore\obj\Debug\VirtualStore.csproj.CoreCompileInputs.cache
+C:\Users\Kross\source\repos\VisualStore\VisualStore\obj\Debug\VisualStore.dll
+C:\Users\Kross\source\repos\VisualStore\VisualStore\obj\Debug\VisualStore.pdb
+C:\Users\Kross\source\repos\TechProg(Lab9)\VisualStore\bin\Debug\VisualStore.dll
+C:\Users\Kross\source\repos\TechProg(Lab9)\VisualStore\bin\Debug\VisualStore.pdb
+C:\Users\Kross\source\repos\TechProg(Lab9)\VisualStore\obj\Debug\VirtualStore.csprojResolveAssemblyReference.cache
+C:\Users\Kross\source\repos\TechProg(Lab9)\VisualStore\obj\Debug\VirtualStore.csproj.CoreCompileInputs.cache
+C:\Users\Kross\source\repos\TechProg(Lab9)\VisualStore\obj\Debug\VisualStore.dll
+C:\Users\Kross\source\repos\TechProg(Lab9)\VisualStore\obj\Debug\VisualStore.pdb
+C:\Users\Kross\source\repos\TechProg(Lab9)WEB\VisualStore\bin\Debug\VisualStore.dll
+C:\Users\Kross\source\repos\TechProg(Lab9)WEB\VisualStore\bin\Debug\VisualStore.pdb
+C:\Users\Kross\source\repos\TechProg(Lab9)WEB\VisualStore\obj\Debug\VirtualStore.csprojResolveAssemblyReference.cache
+C:\Users\Kross\source\repos\TechProg(Lab9)WEB\VisualStore\obj\Debug\VirtualStore.csproj.CoreCompileInputs.cache
+C:\Users\Kross\source\repos\TechProg(Lab9)WEB\VisualStore\obj\Debug\VisualStore.dll
+C:\Users\Kross\source\repos\TechProg(Lab9)WEB\VisualStore\obj\Debug\VisualStore.pdb
+C:\Users\Kross\source\repos\TechProg(Lab11)WEB\VisualStore\obj\Debug\VirtualStore.csproj.CoreCompileInputs.cache
+C:\Users\Kross\source\repos\TechProg(Lab11)WEB\VisualStore\obj\Debug\VisualStore.dll
+C:\Users\Kross\source\repos\TechProg(Lab11)WEB\VisualStore\obj\Debug\VisualStore.pdb
+C:\Users\Kross\source\repos\TechProg(Lab11)WEB\VisualStore\bin\Debug\VisualStore.dll.config
+C:\Users\Kross\source\repos\TechProg(Lab11)WEB\VisualStore\bin\Debug\VisualStore.dll
+C:\Users\Kross\source\repos\TechProg(Lab11)WEB\VisualStore\bin\Debug\VisualStore.pdb
+C:\Users\Kross\source\repos\TechProg(Lab11)WEB\VisualStore\bin\Debug\EntityFramework.dll
+C:\Users\Kross\source\repos\TechProg(Lab11)WEB\VisualStore\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Kross\source\repos\TechProg(Lab11)WEB\VisualStore\bin\Debug\EntityFramework.xml
+C:\Users\Kross\source\repos\TechProg(Lab11)WEB\VisualStore\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Kross\source\repos\TechProg(Lab11)WEB — копия\VisualStore\bin\Debug\VisualStore.dll.config
+C:\Users\Kross\source\repos\TechProg(Lab11)WEB — копия\VisualStore\bin\Debug\VisualStore.dll
+C:\Users\Kross\source\repos\TechProg(Lab11)WEB — копия\VisualStore\bin\Debug\VisualStore.pdb
+C:\Users\Kross\source\repos\TechProg(Lab11)WEB — копия\VisualStore\bin\Debug\EntityFramework.dll
+C:\Users\Kross\source\repos\TechProg(Lab11)WEB — копия\VisualStore\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Kross\source\repos\TechProg(Lab11)WEB — копия\VisualStore\bin\Debug\EntityFramework.xml
+C:\Users\Kross\source\repos\TechProg(Lab11)WEB — копия\VisualStore\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Kross\source\repos\TechProg(Lab11)WEB — копия\VisualStore\obj\Debug\VirtualStore.csprojResolveAssemblyReference.cache
+C:\Users\Kross\source\repos\TechProg(Lab11)WEB — копия\VisualStore\obj\Debug\VirtualStore.csproj.CoreCompileInputs.cache
+C:\Users\Kross\source\repos\TechProg(Lab11)WEB — копия\VisualStore\obj\Debug\VisualStore.dll
+C:\Users\Kross\source\repos\TechProg(Lab11)WEB — копия\VisualStore\obj\Debug\VisualStore.pdb
+C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VisualStore\bin\Debug\VisualStore.dll.config
+C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VisualStore\bin\Debug\VisualStore.dll
+C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VisualStore\bin\Debug\VisualStore.pdb
+C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VisualStore\bin\Debug\EntityFramework.dll
+C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VisualStore\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VisualStore\bin\Debug\EntityFramework.xml
+C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VisualStore\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VisualStore\obj\Debug\VirtualStore.csprojResolveAssemblyReference.cache
+C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VisualStore\obj\Debug\VirtualStore.csproj.CoreCompileInputs.cache
+C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VisualStore\obj\Debug\VisualStore.dll
+C:\Users\Kross\source\repos\TechProg(Lab12)WEB\VisualStore\obj\Debug\VisualStore.pdb
